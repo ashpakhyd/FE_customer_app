@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "Customer App",
+  title: "Help App",
   description: "Mobile-first customer management app",
   manifest: "/manifest.json",
   themeColor: "#fbbf24",
