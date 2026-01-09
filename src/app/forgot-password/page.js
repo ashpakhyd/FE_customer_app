@@ -1,25 +1,25 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useForgotPasswordMutation } from '../../store/slices/authApi';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function ForgotPassword() {
-  const [phone, setPhone] = useState('');
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
 
     try {
-      await forgotPassword({ phone }).unwrap();
+      await forgotPassword({ phone: data.phone }).unwrap();
       setSuccess(true);
       setTimeout(() => {
-        router.push(`/reset-password?phone=${phone}`);
+        router.push(`/reset-password?phone=${data.phone}`);
       }, 2000);
     } catch (error) {
       setError('Phone number not found');
@@ -54,15 +54,14 @@ export default function ForgotPassword() {
           <p className="text-gray-600">Enter your phone number to reset password</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input
+            {...register('phone', { required: 'Phone number is required' })}
             type="tel"
             placeholder="Phone Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
             className="input-field"
-            required
           />
+          {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

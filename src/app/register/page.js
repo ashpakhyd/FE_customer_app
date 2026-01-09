@@ -1,40 +1,35 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useRegisterMutation } from '../../store/slices/authApi';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Register() {
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    email: '',
-    password: '',
-    confirmPassword: ''
-  });
-  const [register, { isLoading }] = useRegisterMutation();
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
+  const [registerUser, { isLoading }] = useRegisterMutation();
   const [error, setError] = useState('');
   const router = useRouter();
+  const password = watch('password');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
     
-    if (formData.password !== formData.confirmPassword) {
+    if (data.password !== data.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
 
     try {
-      await register({
-        name: formData.name,
-        phone: formData.phone,
-        email: formData.email,
-        password: formData.password,
+      await registerUser({
+        name: data.name,
+        phone: data.phone,
+        email: data.email,
+        password: data.password,
         role: 'CUSTOMER'
       }).unwrap();
       
-      router.push(`/otp?phone=${formData.phone}&type=register`);
+      router.push(`/otp?phone=${data.phone}&type=register`);
     } catch (error) {
       setError('Registration failed. Please try again.');
     }
@@ -51,51 +46,52 @@ export default function Register() {
           <p className="text-gray-600">Join our service platform</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input
+            {...register('name', { required: 'Name is required' })}
             type="text"
             placeholder="Full Name"
-            value={formData.name}
-            onChange={(e) => setFormData({...formData, name: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           
           <input
+            {...register('phone', { required: 'Phone is required' })}
             type="tel"
             placeholder="Phone Number"
-            value={formData.phone}
-            onChange={(e) => setFormData({...formData, phone: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
           
           <input
+            {...register('email', { 
+              required: 'Email is required',
+              pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: 'Invalid email' }
+            })}
             type="email"
             placeholder="Email Address"
-            value={formData.email}
-            onChange={(e) => setFormData({...formData, email: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           
           <input
+            {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' } })}
             type="password"
             placeholder="Password"
-            value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
           
           <input
+            {...register('confirmPassword', { 
+              required: 'Confirm password is required',
+              validate: value => value === password || 'Passwords do not match'
+            })}
             type="password"
             placeholder="Confirm Password"
-            value={formData.confirmPassword}
-            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

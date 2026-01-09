@@ -1,15 +1,12 @@
 'use client';
 
 import { useState, Suspense } from 'react';
+import { useForm } from 'react-hook-form';
 import { useResetPasswordMutation } from '../../store/slices/authApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function ResetPasswordContent() {
-  const [formData, setFormData] = useState({
-    otp: '',
-    newPassword: '',
-    confirmPassword: ''
-  });
+  const { register, handleSubmit, watch, formState: { errors } } = useForm();
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -17,12 +14,12 @@ function ResetPasswordContent() {
   const searchParams = useSearchParams();
   
   const phone = searchParams.get('phone');
+  const newPassword = watch('newPassword');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
     
-    if (formData.newPassword !== formData.confirmPassword) {
+    if (data.newPassword !== data.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
@@ -30,8 +27,8 @@ function ResetPasswordContent() {
     try {
       await resetPassword({
         phone,
-        otp: formData.otp,
-        newPassword: formData.newPassword
+        otp: data.otp,
+        newPassword: data.newPassword
       }).unwrap();
       
       setSuccess(true);
@@ -74,34 +71,34 @@ function ResetPasswordContent() {
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input
+            {...register('otp', { required: 'OTP is required', minLength: { value: 6, message: 'OTP must be 6 digits' } })}
             type="text"
             placeholder="Enter OTP"
-            value={formData.otp}
-            onChange={(e) => setFormData({...formData, otp: e.target.value})}
             className="input-field"
             maxLength="6"
-            required
           />
+          {errors.otp && <p className="text-red-500 text-sm">{errors.otp.message}</p>}
           
           <input
+            {...register('newPassword', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' } })}
             type="password"
             placeholder="New Password"
-            value={formData.newPassword}
-            onChange={(e) => setFormData({...formData, newPassword: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.newPassword && <p className="text-red-500 text-sm">{errors.newPassword.message}</p>}
           
           <input
+            {...register('confirmPassword', { 
+              required: 'Confirm password is required',
+              validate: value => value === newPassword || 'Passwords do not match'
+            })}
             type="password"
             placeholder="Confirm New Password"
-            value={formData.confirmPassword}
-            onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword.message}</p>}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">

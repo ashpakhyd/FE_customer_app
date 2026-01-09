@@ -1,37 +1,22 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useCreateTicketMutation } from '../store/slices/ticketsApi';
 
 export default function CreateTicket() {
-  const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    priority: 'MEDIUM',
-    serviceType: 'REPAIR',
-    appliance: '',
-    issue: '',
-    address: '',
-    timeSlot: '',
-    urgency: 'NORMAL'
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      priority: 'MEDIUM',
+      serviceType: 'REPAIR',
+      urgency: 'NORMAL'
+    }
   });
   const [createTicket, { isLoading }] = useCreateTicketMutation();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     try {
-      await createTicket(formData).unwrap();
-      setFormData({
-        title: '',
-        description: '',
-        priority: 'MEDIUM',
-        serviceType: 'REPAIR',
-        appliance: '',
-        issue: '',
-        address: '',
-        timeSlot: '',
-        urgency: 'NORMAL'
-      });
+      await createTicket(data).unwrap();
+      reset();
     } catch (error) {
       console.error('Failed to create ticket:', error);
     }
@@ -40,46 +25,46 @@ export default function CreateTicket() {
   return (
     <div className="p-4 max-w-md mx-auto">
       <h2 className="text-xl font-bold mb-4">Create Service Ticket</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <input
+          {...register('title', { required: 'Title is required' })}
           type="text"
           placeholder="Title"
-          value={formData.title}
-          onChange={(e) => setFormData({...formData, title: e.target.value})}
           className="w-full p-3 border rounded-lg"
-          required
         />
+        {errors.title && <p className="text-red-500 text-sm">{errors.title.message}</p>}
+        
         <textarea
+          {...register('description', { required: 'Description is required' })}
           placeholder="Description"
-          value={formData.description}
-          onChange={(e) => setFormData({...formData, description: e.target.value})}
           className="w-full p-3 border rounded-lg h-24"
-          required
         />
+        {errors.description && <p className="text-red-500 text-sm">{errors.description.message}</p>}
+        
         <select
-          value={formData.priority}
-          onChange={(e) => setFormData({...formData, priority: e.target.value})}
+          {...register('priority')}
           className="w-full p-3 border rounded-lg"
         >
           <option value="LOW">Low</option>
           <option value="MEDIUM">Medium</option>
           <option value="HIGH">High</option>
         </select>
+        
         <input
+          {...register('appliance', { required: 'Appliance is required' })}
           type="text"
           placeholder="Appliance"
-          value={formData.appliance}
-          onChange={(e) => setFormData({...formData, appliance: e.target.value})}
           className="w-full p-3 border rounded-lg"
-          required
         />
+        {errors.appliance && <p className="text-red-500 text-sm">{errors.appliance.message}</p>}
+        
         <textarea
+          {...register('address', { required: 'Address is required' })}
           placeholder="Address"
-          value={formData.address}
-          onChange={(e) => setFormData({...formData, address: e.target.value})}
           className="w-full p-3 border rounded-lg h-20"
-          required
         />
+        {errors.address && <p className="text-red-500 text-sm">{errors.address.message}</p>}
+        
         <button
           type="submit"
           disabled={isLoading}

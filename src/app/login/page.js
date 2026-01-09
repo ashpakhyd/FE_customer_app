@@ -1,24 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../../store/slices/authApi';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Login() {
-  const [formData, setFormData] = useState({
-    phone: '',
-    password: ''
-  });
+  const { register, handleSubmit, formState: { errors } } = useForm();
   const [login, { isLoading }] = useLoginMutation();
   const [error, setError] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (data) => {
     setError('');
 
     try {
-      const result = await login(formData).unwrap();
+      const result = await login(data).unwrap();
       localStorage.setItem('token', result.token);
       router.push('/');
     } catch (error) {
@@ -37,24 +34,22 @@ export default function Login() {
           <p className="text-gray-600">Sign in to your account</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <input
+            {...register('phone', { required: 'Phone number is required' })}
             type="tel"
             placeholder="Phone Number"
-            value={formData.phone}
-            onChange={(e) => setFormData({...formData, phone: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
           
           <input
+            {...register('password', { required: 'Password is required' })}
             type="password"
             placeholder="Password"
-            value={formData.password}
-            onChange={(e) => setFormData({...formData, password: e.target.value})}
             className="input-field"
-            required
           />
+          {errors.password && <p className="text-red-500 text-sm">{errors.password.message}</p>}
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
