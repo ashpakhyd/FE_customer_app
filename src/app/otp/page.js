@@ -1,10 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useVerifyOtpMutation, useSendOtpMutation } from '../../store/slices/authApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function OTP() {
+function OTPContent() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
   const [sendOtp, { isLoading: isResending }] = useSendOtpMutation();
@@ -30,7 +30,7 @@ export default function OTP() {
       setOtp(newOtp);
       
       if (value && index < 5) {
-        document.getElementById(`otp-${index + 1}`).focus();
+        document.getElementById(`otp-${index + 1}`)?.focus();
       }
     }
   };
@@ -74,7 +74,7 @@ export default function OTP() {
           <h1 className="text-2xl font-bold text-black mb-2">Verify OTP</h1>
           <p className="text-gray-600">
             Enter the 6-digit code sent to<br />
-            <span className="font-semibold text-black">{phone}</span>
+            <span className="font-semibold text-black">{phone || 'your phone'}</span>
           </p>
         </div>
 
@@ -136,5 +136,17 @@ export default function OTP() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OTP() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <OTPContent />
+    </Suspense>
   );
 }

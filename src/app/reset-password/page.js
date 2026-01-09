@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useResetPasswordMutation } from '../../store/slices/authApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function ResetPassword() {
+function ResetPasswordContent() {
   const [formData, setFormData] = useState({
     otp: '',
     newPassword: '',
@@ -70,7 +70,7 @@ export default function ResetPassword() {
           <h1 className="text-2xl font-bold text-black mb-2">Reset Password</h1>
           <p className="text-gray-600">
             Enter OTP and your new password for<br />
-            <span className="font-semibold text-black">{phone}</span>
+            <span className="font-semibold text-black">{phone || 'your phone'}</span>
           </p>
         </div>
 
@@ -128,5 +128,17 @@ export default function ResetPassword() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ResetPassword() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <ResetPasswordContent />
+    </Suspense>
   );
 }
