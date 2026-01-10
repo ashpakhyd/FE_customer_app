@@ -13,6 +13,13 @@ export default function Home() {
   useEffect(() => {
     setIsClient(true);
     const token = localStorage.getItem('token');
+    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+    
+    if (!onboardingCompleted) {
+      router.push('/onboarding');
+      return;
+    }
+    
     if (!token) {
       router.push('/login');
     }
@@ -29,6 +36,16 @@ export default function Home() {
   });
 
   if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+  // Check if onboarding is completed
+  const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+  if (!onboardingCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>

@@ -3,13 +3,31 @@
 import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../../store/slices/authApi';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors } } = useForm();
   const [login, { isLoading }] = useLoginMutation();
   const [error, setError] = useState('');
+  const [isClient, setIsClient] = useState(false);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+    const onboardingCompleted = localStorage.getItem('onboardingCompleted');
+    
+    if (!onboardingCompleted) {
+      router.push('/onboarding');
+    }
+  }, [router]);
+
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  }
 
   const onSubmit = async (data) => {
     setError('');
