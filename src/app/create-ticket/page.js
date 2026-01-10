@@ -2,11 +2,16 @@
 
 import { useForm } from 'react-hook-form';
 import { useCreateTicketMutation } from '../../store/slices/ticketsApi';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 
 export default function CreateTicket() {
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+  const searchParams = useSearchParams();
+  const serviceName = searchParams.get('serviceName');
+  const categoryName = searchParams.get('categoryName');
+  const subcategoryName = searchParams.get('subcategoryName');
+  
+  const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
     defaultValues: {
       priority: 'MEDIUM',
       serviceType: 'REPAIR',
@@ -14,6 +19,15 @@ export default function CreateTicket() {
       timeSlot: 'morning'
     }
   });
+  
+  useEffect(() => {
+    if (serviceName && categoryName && subcategoryName) {
+      setValue('title', `${categoryName} - ${subcategoryName}`);
+      setValue('serviceCategory', serviceName);
+      setValue('appliance', categoryName);
+      setValue('issue', subcategoryName);
+    }
+  }, [serviceName, categoryName, subcategoryName, setValue]);
   const [createTicket, { isLoading }] = useCreateTicketMutation();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
@@ -27,7 +41,7 @@ export default function CreateTicket() {
       reset();
       setTimeout(() => {
         router.push('/tickets');
-      }, 2000);
+      }, 7000);
     } catch (error) {
       setError('Failed to create ticket. Please try again.');
     }
@@ -44,6 +58,19 @@ export default function CreateTicket() {
           <p className="text-gray-600 mb-4">
             Your service request has been submitted successfully.
           </p>
+          
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
+            <h3 className="font-semibold text-black mb-2">Need Fast Service?</h3>
+            <p className="text-sm text-gray-600 mb-3">For urgent requests, call us directly</p>
+            <a 
+              href="tel:+919172605997"
+              className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-medium text-sm inline-flex items-center space-x-2 hover:bg-yellow-500 transition-colors"
+            >
+              <span>📞</span>
+              <span>+91 9172605997</span>
+            </a>
+          </div>
+          
           <p className="text-sm text-gray-500">Redirecting to tickets...</p>
         </div>
       </div>
@@ -64,6 +91,17 @@ export default function CreateTicket() {
 
       {/* Form */}
       <div className="p-4 max-w-md mx-auto">
+        {serviceName && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+            <h3 className="font-semibold text-black mb-2">Selected Service</h3>
+            <div className="space-y-1">
+              <p className="text-sm text-gray-700"><span className="font-medium">Service:</span> {serviceName}</p>
+              <p className="text-sm text-gray-700"><span className="font-medium">Category:</span> {categoryName}</p>
+              <p className="text-sm text-gray-700"><span className="font-medium">Type:</span> {subcategoryName}</p>
+            </div>
+          </div>
+        )}
+        
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-black mb-2">Title</label>

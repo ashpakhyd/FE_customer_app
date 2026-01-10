@@ -51,7 +51,7 @@ export default function Tickets() {
           </button>
           <h1 className="text-xl font-bold text-black">My Tickets</h1>
           <button 
-            onClick={() => router.push('/create-ticket')}
+            onClick={() => router.push('/services')}
             className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center"
           >
             <span className="text-lg font-bold">+</span>
@@ -114,7 +114,7 @@ export default function Tickets() {
             <h3 className="font-semibold text-black mb-2">No Tickets Found</h3>
             <p className="text-gray-600 mb-4">You haven't created any tickets yet</p>
             <button 
-              onClick={() => router.push('/create-ticket')}
+              onClick={() => router.push('/services')}
               className="btn-primary"
             >
               Create First Ticket

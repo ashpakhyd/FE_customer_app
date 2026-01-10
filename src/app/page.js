@@ -121,7 +121,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div 
-              onClick={() => router.push('/create-ticket')}
+              onClick={() => router.push('/services')}
               className="bg-yellow-100 rounded-xl p-4 cursor-pointer"
             >
               <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center mb-2">
