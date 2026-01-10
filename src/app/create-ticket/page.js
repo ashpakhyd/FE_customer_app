@@ -10,7 +10,8 @@ export default function CreateTicket() {
     defaultValues: {
       priority: 'MEDIUM',
       serviceType: 'REPAIR',
-      urgency: 'NORMAL'
+      urgency: 'normal',
+      timeSlot: 'morning'
     }
   });
   const [createTicket, { isLoading }] = useCreateTicketMutation();
@@ -51,7 +52,6 @@ export default function CreateTicket() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
-      {/* Header */}
       <div className="bg-white p-4 rounded-b-3xl shadow-sm">
         <div className="flex items-center justify-between max-w-md mx-auto">
           <button onClick={() => router.back()} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
@@ -87,6 +87,17 @@ export default function CreateTicket() {
           </div>
           
           <div>
+            <label className="block text-sm font-medium text-black mb-2">Issue</label>
+            <input
+              {...register('issue', { required: 'Issue is required' })}
+              type="text"
+              placeholder="e.g., Not cooling, Making noise"
+              className="input-field"
+            />
+            {errors.issue && <p className="text-red-500 text-sm mt-1">{errors.issue.message}</p>}
+          </div>
+          
+          <div>
             <label className="block text-sm font-medium text-black mb-2">Priority</label>
             <select
               {...register('priority')}
@@ -107,6 +118,18 @@ export default function CreateTicket() {
               className="input-field"
             />
             {errors.appliance && <p className="text-red-500 text-sm mt-1">{errors.appliance.message}</p>}
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">Time Slot</label>
+            <select
+              {...register('timeSlot')}
+              className="input-field"
+            >
+              <option value="morning">Morning</option>
+              <option value="afternoon">Afternoon</option>
+              <option value="evening">Evening</option>
+            </select>
           </div>
           
           <div>

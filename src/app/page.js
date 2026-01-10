@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
   
   useEffect(() => {
@@ -76,9 +77,17 @@ export default function Home() {
             <input
               type="text"
               placeholder="Search tickets..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && searchTerm && router.push(`/tickets?search=${encodeURIComponent(searchTerm)}`)}
               className="w-full bg-gray-100 rounded-xl px-4 py-3 pr-10 text-sm"
             />
-            <span className="absolute right-3 top-3 text-gray-400">🔍</span>
+            <button 
+              onClick={() => searchTerm && router.push(`/tickets?search=${encodeURIComponent(searchTerm)}`)}
+              className="absolute right-3 top-3 text-gray-400"
+            >
+              🔍
+            </button>
           </div>
         </div>
       </div>
@@ -108,7 +117,7 @@ export default function Home() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-black">Quick Actions</h3>
-            <button className="text-yellow-600 text-sm font-medium">View All</button>
+            <button onClick={() => router.push('/tickets')} className="text-yellow-600 text-sm font-medium">View All</button>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div 
@@ -138,7 +147,7 @@ export default function Home() {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-black">Recent Activity</h3>
-            <button className="text-yellow-600 text-sm font-medium">View All</button>
+            <button onClick={() => router.push('/tickets')} className="text-yellow-600 text-sm font-medium">View All</button>
           </div>
           <div className="space-y-3">
             {tickets?.slice(0, 3).map((ticket) => (
