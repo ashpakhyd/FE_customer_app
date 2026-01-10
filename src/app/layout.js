@@ -17,14 +17,20 @@ export const metadata = {
   description: "Mobile-first customer management app",
   manifest: "/manifest.json",
   themeColor: "#fbbf24",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no",
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover'
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta name="theme-color" content="#fbbf24" />
         <link rel="manifest" href="/manifest.json" />
       </head>
