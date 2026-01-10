@@ -3,9 +3,9 @@
 import { useForm } from 'react-hook-form';
 import { useCreateTicketMutation } from '../../store/slices/ticketsApi';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 
-export default function CreateTicket() {
+function CreateTicketForm() {
   const searchParams = useSearchParams();
   const serviceName = searchParams.get('serviceName');
   const categoryName = searchParams.get('categoryName');
@@ -226,5 +226,20 @@ export default function CreateTicket() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CreateTicket() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <CreateTicketForm />
+    </Suspense>
   );
 }
