@@ -113,33 +113,132 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Emergency Banner */}
+        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-4 text-white mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-xl">🚨</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Emergency Service</h3>
+                <p className="text-xs opacity-90">24/7 urgent repairs</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => window.location.href = 'tel:+919172605997'}
+              className="bg-white text-red-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+            >
+              Call Now
+            </button>
+          </div>
+        </div>
+
         {/* Quick Actions */}
         <div>
           <div className="flex items-center justify-between mb-4">
             <h3 className="font-semibold text-black">Quick Actions</h3>
-            <button onClick={() => router.push('/tickets')} className="text-yellow-600 text-sm font-medium">View All</button>
+            <button onClick={() => router.push('/services')} className="text-yellow-600 text-sm font-medium">View All</button>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div 
               onClick={() => router.push('/services')}
-              className="bg-yellow-100 rounded-xl p-4 cursor-pointer"
+              className="bg-yellow-100 rounded-xl p-4 cursor-pointer hover:bg-yellow-200 transition-colors"
             >
-              <div className="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center mb-2">
-                <span className="text-sm">🔧</span>
+              <div className="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center mb-3">
+                <span className="text-lg">🔧</span>
               </div>
-              <p className="font-medium text-black text-sm">New Service</p>
+              <p className="font-semibold text-black text-sm mb-1">New Service</p>
               <p className="text-xs text-gray-600">Request repair service</p>
             </div>
             <div 
               onClick={() => router.push('/tickets')}
-              className="bg-blue-100 rounded-xl p-4 cursor-pointer"
+              className="bg-blue-100 rounded-xl p-4 cursor-pointer hover:bg-blue-200 transition-colors"
             >
-              <div className="w-8 h-8 bg-blue-400 rounded-lg flex items-center justify-center mb-2">
-                <span className="text-sm">📋</span>
+              <div className="w-10 h-10 bg-blue-400 rounded-xl flex items-center justify-center mb-3">
+                <span className="text-lg">📋</span>
               </div>
-              <p className="font-medium text-black text-sm">My Tickets</p>
+              <p className="font-semibold text-black text-sm mb-1">My Tickets</p>
               <p className="text-xs text-gray-600">Track your requests</p>
             </div>
+            <div 
+              onClick={() => router.push('/help')}
+              className="bg-green-100 rounded-xl p-4 cursor-pointer hover:bg-green-200 transition-colors"
+            >
+              <div className="w-10 h-10 bg-green-400 rounded-xl flex items-center justify-center mb-3">
+                <span className="text-lg">💬</span>
+              </div>
+              <p className="font-semibold text-black text-sm mb-1">Support</p>
+              <p className="text-xs text-gray-600">Get help instantly</p>
+            </div>
+            <div 
+              onClick={() => router.push('/book-appointment')}
+              className="bg-purple-100 rounded-xl p-4 cursor-pointer hover:bg-purple-200 transition-colors"
+            >
+              <div className="w-10 h-10 bg-purple-400 rounded-xl flex items-center justify-center mb-3">
+                <span className="text-lg">📅</span>
+              </div>
+              <p className="font-semibold text-black text-sm mb-1">Schedule</p>
+              <p className="text-xs text-gray-600">Book appointment</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Featured Services */}
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-black">Featured Services</h3>
+            <button onClick={() => router.push('/services')} className="text-yellow-600 text-sm font-medium">View All</button>
+          </div>
+          <div className="grid grid-cols-3 gap-3">
+            <div 
+              onClick={() => router.push('/services/ac')}
+              className="bg-white rounded-xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+            >
+              <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-2">
+                <span className="text-lg">❄️</span>
+              </div>
+              <p className="font-medium text-black text-xs text-center">AC Service</p>
+            </div>
+            <div 
+              onClick={() => router.push('/services/washing-machine')}
+              className="bg-white rounded-xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+            >
+              <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-2">
+                <span className="text-lg">🧺</span>
+              </div>
+              <p className="font-medium text-black text-xs text-center">Washing</p>
+            </div>
+            <div 
+              onClick={() => router.push('/services/refrigerator')}
+              className="bg-white rounded-xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
+            >
+              <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-2">
+                <span className="text-lg">🧊</span>
+              </div>
+              <p className="font-medium text-black text-xs text-center">Fridge</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Special Offers */}
+        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-4 text-black">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-xl">🎁</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Special Offers</h3>
+                <p className="text-xs opacity-90">Save up to 30% on services</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => alert('Offers coming soon!')}
+              className="bg-white text-orange-600 px-3 py-2 rounded-lg font-medium text-xs hover:bg-gray-100 transition-colors"
+            >
+              View Deals
+            </button>
           </div>
         </div>
 
@@ -151,27 +250,48 @@ export default function Home() {
           </div>
           <div className="space-y-3">
             {tickets?.slice(0, 3).map((ticket) => (
-              <div key={ticket._id} className="bg-white rounded-xl p-4 shadow-sm">
+              <div key={ticket._id} className="bg-white rounded-xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => router.push(`/tickets/${ticket._id}`)}>
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                    <span className="text-sm">🎫</span>
+                  <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                    <span className="text-lg">🎫</span>
                   </div>
                   <div className="flex-1">
-                    <p className="font-medium text-black text-sm">{ticket.title}</p>
-                    <p className="text-xs text-gray-500">{ticket.status}</p>
+                    <p className="font-semibold text-black text-sm mb-1">{ticket.title}</p>
+                    <div className="flex items-center space-x-2">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                        ticket.status === 'COMPLETED' ? 'bg-green-100 text-green-600' :
+                        ticket.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-600' :
+                        ticket.status === 'PENDING' ? 'bg-yellow-100 text-yellow-600' :
+                        'bg-gray-100 text-gray-600'
+                      }`}>
+                        {ticket.status}
+                      </span>
+                      <span className={`px-2 py-1 rounded-full text-xs ${
+                        ticket.priority === 'HIGH' ? 'bg-red-100 text-red-600' :
+                        ticket.priority === 'MEDIUM' ? 'bg-orange-100 text-orange-600' :
+                        'bg-green-100 text-green-600'
+                      }`}>
+                        {ticket.priority}
+                      </span>
+                    </div>
                   </div>
-                  <span className={`px-2 py-1 rounded-full text-xs ${
-                    ticket.priority === 'HIGH' ? 'bg-red-100 text-red-600' :
-                    ticket.priority === 'MEDIUM' ? 'bg-yellow-100 text-yellow-600' :
-                    'bg-green-100 text-green-600'
-                  }`}>
-                    {ticket.priority}
-                  </span>
+                  <div className="text-gray-400">
+                    <span className="text-lg">→</span>
+                  </div>
                 </div>
               </div>
             )) || (
               <div className="text-center py-8">
-                <p className="text-gray-500 text-sm">No recent activity</p>
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-2xl">📋</span>
+                </div>
+                <p className="text-gray-500 text-sm mb-2">No recent activity</p>
+                <button 
+                  onClick={() => router.push('/services')}
+                  className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-medium text-sm hover:bg-yellow-500 transition-colors"
+                >
+                  Create First Ticket
+                </button>
               </div>
             )}
           </div>
