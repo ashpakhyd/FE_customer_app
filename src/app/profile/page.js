@@ -80,7 +80,10 @@ export default function Profile() {
             <span className="text-gray-400">→</span>
           </button>
 
-          <button className="w-full bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+          <button 
+            onClick={() => router.push('/settings')}
+            className="w-full bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between"
+          >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
                 <span className="text-lg">⚙️</span>
@@ -90,7 +93,10 @@ export default function Profile() {
             <span className="text-gray-400">→</span>
           </button>
 
-          <button className="w-full bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between">
+          <button 
+            onClick={() => router.push('/help')}
+            className="w-full bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between"
+          >
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
                 <span className="text-lg">❓</span>
@@ -112,6 +118,11 @@ export default function Profile() {
             </div>
             <span className="text-red-400">→</span>
           </button>
+        </div>
+
+        {/* Copyright */}
+        <div className="text-center mt-6">
+          <p className="text-xs text-gray-500">© 2024 Ashfaq Ahemad Shaikh. All rights reserved.</p>
         </div>
       </div>
 
