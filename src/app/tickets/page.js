@@ -59,12 +59,12 @@ export default function Tickets() {
         </div>
 
         {/* Filter Tabs */}
-        <div className="flex space-x-2 max-w-md mx-auto">
-          {['ALL', 'OPEN', 'ASSIGNED', 'IN_PROGRESS', 'COMPLETED'].map((status) => (
+        <div className="flex space-x-2 max-w-md mx-auto overflow-x-auto scrollbar-hide pb-2">
+          {['ALL', 'NEW', 'OPEN', 'ASSIGNED', 'IN_PROGRESS', 'COMPLETED'].map((status) => (
             <button
               key={status}
               onClick={() => setFilter(status)}
-              className={`px-3 py-2 rounded-lg text-xs font-medium ${
+              className={`px-3 py-2 rounded-lg text-xs font-medium whitespace-nowrap flex-shrink-0 ${
                 filter === status 
                   ? 'bg-yellow-400 text-black' 
                   : 'bg-gray-100 text-gray-600'
