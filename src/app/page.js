@@ -112,7 +112,7 @@ export default function Home() {
       {/* Main Content */}
       <div className="p-4 max-w-md mx-auto space-y-6">
         {/* Service Status Card */}
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 text-black shadow-md border border-yellow-300">
+        <div className="gradient-card rounded-2xl p-6 text-black" style={{background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fcd34d'}}>
           <h3 className="text-lg font-bold mb-2">Your Service Status</h3>
           <p className="text-sm mb-4 opacity-90">
             {activeTickets > 0 ? `You have ${activeTickets} active service requests` : 'All services completed'}
@@ -131,7 +131,7 @@ export default function Home() {
         </div>
 
         {/* Emergency Banner */}
-        <div className="bg-gradient-to-r from-red-500 to-red-600 rounded-2xl p-4 text-white mb-6 shadow-md border border-red-400">
+        <div className="gradient-card-red rounded-2xl p-4 text-white mb-6" style={{background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #f87171'}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -239,7 +239,7 @@ export default function Home() {
         </div>
 
         {/* Special Offers */}
-        <div className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-4 text-black shadow-md border border-yellow-300">
+        <div className="gradient-card rounded-2xl p-4 text-black" style={{background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fcd34d'}}>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
