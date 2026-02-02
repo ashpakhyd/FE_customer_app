@@ -31,7 +31,68 @@ function CreateTicketForm() {
   const [createTicket, { isLoading }] = useCreateTicketMutation();
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [loadingLocation, setLoadingLocation] = useState(false);
   const router = useRouter();
+
+  const getCurrentLocation = () => {
+    setLoadingLocation(true);
+    
+    if (!navigator.geolocation) {
+      setError('Geolocation is not supported by this browser');
+      setLoadingLocation(false);
+      return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        try {
+          const { latitude, longitude } = position.coords;
+          
+          const response = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1`
+          );
+          const data = await response.json();
+          
+          // Extract detailed address components
+          const address = data.address;
+          const detailedAddress = [
+            address.house_number || '',
+            address.road || address.street || '',
+            address.neighbourhood || address.suburb || '',
+            address.village || address.town || address.city || '',
+            address.state_district || '',
+            address.state || '',
+            address.postcode || '',
+            address.country || ''
+          ].filter(Boolean).join(', ');
+          
+          // Store coordinates for admin panel
+          const fullLocationData = {
+            address: detailedAddress,
+            latitude: latitude,
+            longitude: longitude,
+            city: address.city || address.town || address.village,
+            state: address.state,
+            pincode: address.postcode,
+            country: address.country
+          };
+          
+          setValue('address', detailedAddress);
+          setValue('latitude', latitude);
+          setValue('longitude', longitude);
+          setLoadingLocation(false);
+        } catch (error) {
+          setError('Failed to get address from location');
+          setLoadingLocation(false);
+        }
+      },
+      (error) => {
+        setError('Unable to get your location. Please enter address manually.');
+        setLoadingLocation(false);
+      },
+      { timeout: 10000 }
+    );
+  };
 
   const onSubmit = async (data) => {
     setError('');
@@ -41,7 +102,7 @@ function CreateTicketForm() {
       reset();
       setTimeout(() => {
         router.push('/tickets');
-      }, 7000);
+      }, 3000);
     } catch (error) {
       setError('Failed to create ticket. Please try again.');
     }
@@ -172,13 +233,28 @@ function CreateTicketForm() {
           
           <div>
             <label className="block text-sm font-medium text-black mb-2">Service Address</label>
-            <textarea
-              {...register('address', { required: 'Address is required' })}
-              placeholder="Enter your complete address..."
-              className="input-field h-20 resize-none"
-            />
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={getCurrentLocation}
+                disabled={loadingLocation}
+                className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-medium text-sm hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
+              >
+                <span>📍</span>
+                <span>{loadingLocation ? 'Getting Location...' : 'Use Current Location'}</span>
+              </button>
+              <textarea
+                {...register('address', { required: 'Address is required' })}
+                placeholder="Enter your complete address or use current location..."
+                className="input-field h-20 resize-none"
+              />
+            </div>
             {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
           </div>
+
+          {/* Hidden fields for coordinates */}
+          <input type="hidden" {...register('latitude')} />
+          <input type="hidden" {...register('longitude')} />
 
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
