@@ -299,11 +299,12 @@ function CreateTicketForm() {
                 <span>{loadingLocation ? 'Getting Location...' : 'Use Current Location'}</span>
               </button>
               <input
-                {...register('houseDetails')}
+                {...register('houseDetails', { required: 'House details are required' })}
                 type="text"
-                placeholder="House/Flat No, Colony/Society Name (Optional)"
+                placeholder="House/Flat No, Colony/Society Name"
                 className="input-field"
               />
+              {errors.houseDetails && <p className="text-red-500 text-sm mt-1">{errors.houseDetails.message}</p>}
               <textarea
                 {...register('address', { required: 'Address is required' })}
                 placeholder="Enter your complete address or use current location..."
