@@ -15,7 +15,8 @@ export default function ServiceCategories({ params }) {
         { id: 'wiring', name: 'Wiring & Installation', icon: '🔌', desc: 'New wiring, switches, outlets' },
         { id: 'repair', name: 'Electrical Repair', icon: '🔧', desc: 'Fix electrical issues' },
         { id: 'lighting', name: 'Lighting Solutions', icon: '💡', desc: 'LED, bulbs, fixtures' },
-        { id: 'fan', name: 'Fan Installation', icon: '🌀', desc: 'Ceiling & wall fans' }
+        { id: 'fan', name: 'Fan Installation', icon: '🌀', desc: 'Ceiling & wall fans' },
+        { id: 'other', name: 'Other', icon: '⚙️', desc: 'Other electrical services' }
       ]
     },
     appliances: {
@@ -27,7 +28,8 @@ export default function ServiceCategories({ params }) {
         { id: 'microwave', name: 'Microwave', icon: '📱', desc: 'Heating & repair' },
         { id: 'dishwasher', name: 'Dishwasher', icon: '🍽️', desc: 'Cleaning & repair' },
         { id: 'ac', name: 'Air Conditioner', icon: '❄️', desc: 'AC repair & service' },
-        { id: 'tv', name: 'Television', icon: '📺', desc: 'TV repair & setup' }
+        { id: 'tv', name: 'Television', icon: '📺', desc: 'TV repair & setup' },
+        { id: 'other', name: 'Other', icon: '⚙️', desc: 'Other appliance services' }
       ]
     },
     plumber: {

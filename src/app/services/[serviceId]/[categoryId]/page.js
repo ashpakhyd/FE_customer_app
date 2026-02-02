@@ -32,6 +32,12 @@ export default function ServiceSubcategories({ params }) {
         { id: 'exhaust-fan', name: 'Exhaust Fan Setup', desc: 'Bathroom & kitchen exhaust' },
         { id: 'wall-fan', name: 'Wall Fan Installation', desc: 'Wall-mounted fans' },
         { id: 'fan-repair', name: 'Fan Repair', desc: 'Fix faulty fans' }
+      ],
+      other: [
+        { id: 'custom-electrical', name: 'Custom Electrical Work', desc: 'Specialized electrical services' },
+        { id: 'electrical-consultation', name: 'Electrical Consultation', desc: 'Expert electrical advice' },
+        { id: 'emergency-electrical', name: 'Emergency Electrical', desc: 'Urgent electrical repairs' },
+        { id: 'other-electrical', name: 'Other Electrical Service', desc: 'Any other electrical work' }
       ]
     },
     appliances: {
@@ -70,6 +76,12 @@ export default function ServiceSubcategories({ params }) {
         { id: 'no-sound', name: 'No Sound', desc: 'Audio problems' },
         { id: 'remote-issues', name: 'Remote Not Working', desc: 'TV remote problems' },
         { id: 'channel-issues', name: 'Channel Problems', desc: 'Signal & channel issues' }
+      ],
+      other: [
+        { id: 'custom-appliance', name: 'Custom Appliance Repair', desc: 'Specialized appliance services' },
+        { id: 'appliance-consultation', name: 'Appliance Consultation', desc: 'Expert appliance advice' },
+        { id: 'emergency-appliance', name: 'Emergency Appliance Repair', desc: 'Urgent appliance repairs' },
+        { id: 'other-appliance', name: 'Other Appliance Service', desc: 'Any other appliance work' }
       ]
     },
     plumber: {
@@ -561,7 +573,7 @@ export default function ServiceSubcategories({ params }) {
     microwave: 'Microwave',
     dishwasher: 'Dishwasher',
     ac: 'Air Conditioner',
-    tv: 'Television',
+    other: 'Other',
     // Plumber
     'pipe-repair': 'Pipe Repair',
     bathroom: 'Bathroom Fitting',

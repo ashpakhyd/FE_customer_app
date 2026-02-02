@@ -1,9 +1,22 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Services() {
   const router = useRouter();
+  const [showToast, setShowToast] = useState(false);
+
+  const activeServices = ['electrician', 'appliances'];
+
+  const handleServiceClick = (serviceId) => {
+    if (activeServices.includes(serviceId)) {
+      router.push(`/services/${serviceId}`);
+    } else {
+      setShowToast(true);
+      setTimeout(() => setShowToast(false), 3000);
+    }
+  };
 
   const services = [
     { id: 'electrician', name: 'Electrician', icon: '⚡', color: 'bg-yellow-100', iconBg: 'bg-yellow-400' },
@@ -47,8 +60,8 @@ export default function Services() {
           {services.map((service) => (
             <div
               key={service.id}
-              onClick={() => router.push(`/services/${service.id}`)}
-              className={`${service.color} rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform`}
+              onClick={() => handleServiceClick(service.id)}
+              className={`${service.color} rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform ${!activeServices.includes(service.id) ? 'opacity-60' : ''}`}
             >
               <div className={`w-12 h-12 ${service.iconBg} rounded-xl flex items-center justify-center mb-3`}>
                 <span className="text-xl">{service.icon}</span>
@@ -59,6 +72,13 @@ export default function Services() {
           ))}
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 bg-yellow-400 text-black px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce">
+          <p className="font-medium text-sm">This service is coming soon!</p>
+        </div>
+      )}
 
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
         <div className="flex items-center justify-around py-2 max-w-md mx-auto">
