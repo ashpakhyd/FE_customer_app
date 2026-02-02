@@ -32,7 +32,50 @@ function CreateTicketForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [uploadingFiles, setUploadingFiles] = useState(false);
   const router = useRouter();
+
+  const uploadToCloudinary = async (file) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', 'ticket_uploads'); // Create this preset in Cloudinary
+    
+    const response = await fetch(
+      `https://api.cloudinary.com/v1_1/dsrmkwxbm/image/upload`,
+      { method: 'POST', body: formData }
+    );
+    
+    return response.json();
+  };
+
+  const handleFileSelect = async (e) => {
+    const files = Array.from(e.target.files);
+    if (files.length === 0) return;
+    
+    setUploadingFiles(true);
+    const uploadedFiles = [];
+    
+    try {
+      for (const file of files) {
+        const result = await uploadToCloudinary(file);
+        uploadedFiles.push({
+          name: file.name,
+          url: result.secure_url,
+          type: file.type
+        });
+      }
+      setSelectedFiles([...selectedFiles, ...uploadedFiles]);
+    } catch (error) {
+      setError('Failed to upload files. Please try again.');
+    } finally {
+      setUploadingFiles(false);
+    }
+  };
+
+  const removeFile = (index) => {
+    setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
+  };
 
   const getCurrentLocation = () => {
     setLoadingLocation(true);
@@ -104,7 +147,8 @@ function CreateTicketForm() {
     
     const ticketData = {
       ...data,
-      address: finalAddress
+      address: finalAddress,
+      attachments: selectedFiles
     };
     
     try {
@@ -267,6 +311,49 @@ function CreateTicketForm() {
               />
             </div>
             {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
+          </div>
+
+          {/* File Upload */}
+          <div>
+            <label className="block text-sm font-medium text-black mb-2">Upload Photos/Documents</label>
+            <div className="space-y-3">
+              <input
+                type="file"
+                accept="image/*,application/pdf"
+                multiple
+                onChange={handleFileSelect}
+                className="input-field"
+                disabled={uploadingFiles}
+              />
+              
+              {uploadingFiles && (
+                <div className="flex items-center space-x-2 text-blue-600">
+                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm">Uploading files...</span>
+                </div>
+              )}
+              
+              {selectedFiles.length > 0 && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium text-gray-700">Uploaded Files:</p>
+                  {selectedFiles.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-sm">📎</span>
+                        <span className="text-sm text-gray-700 truncate">{file.name}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeFile(index)}
+                        className="text-red-500 hover:text-red-700 text-sm"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Hidden fields for coordinates */}

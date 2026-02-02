@@ -138,6 +138,38 @@ export default function TicketDetails({ params }) {
               <div>
                 <h3 className="font-semibold text-black mb-1">Service Address</h3>
                 <p className="text-gray-600">{ticket.address}</p>
+                {(ticket?.latitude && ticket?.longitude) && (
+                  <button 
+                    onClick={() => window.open(`https://maps.google.com/?q=${ticket.latitude},${ticket.longitude}`, '_blank')}
+                    className="mt-2 bg-blue-500 text-white px-3 py-1 rounded-lg text-xs hover:bg-blue-600 transition-colors"
+                  >
+                    📍 View on Map
+                  </button>
+                )}
+              </div>
+            )}
+
+            {ticket?.attachments && ticket.attachments.length > 0 && (
+              <div>
+                <h3 className="font-semibold text-black mb-2">Attachments</h3>
+                <div className="space-y-2">
+                  {ticket.attachments.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">
+                          {file.type?.startsWith('image/') ? '🖼️' : '📄'}
+                        </span>
+                        <span className="text-sm text-gray-700 truncate">{file.name}</span>
+                      </div>
+                      <button
+                        onClick={() => window.open(file.url, '_blank')}
+                        className="bg-yellow-400 text-black px-3 py-1 rounded-lg text-xs hover:bg-yellow-500 transition-colors"
+                      >
+                        View
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
