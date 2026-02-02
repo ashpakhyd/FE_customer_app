@@ -96,8 +96,19 @@ function CreateTicketForm() {
 
   const onSubmit = async (data) => {
     setError('');
+    
+    // Combine house details with address if provided
+    const finalAddress = data.houseDetails 
+      ? `${data.houseDetails}, ${data.address}`
+      : data.address;
+    
+    const ticketData = {
+      ...data,
+      address: finalAddress
+    };
+    
     try {
-      await createTicket(data).unwrap();
+      await createTicket(ticketData).unwrap();
       setSuccess(true);
       reset();
       setTimeout(() => {
@@ -243,6 +254,12 @@ function CreateTicketForm() {
                 <span>📍</span>
                 <span>{loadingLocation ? 'Getting Location...' : 'Use Current Location'}</span>
               </button>
+              <input
+                {...register('houseDetails')}
+                type="text"
+                placeholder="House/Flat No, Colony/Society Name (Optional)"
+                className="input-field"
+              />
               <textarea
                 {...register('address', { required: 'Address is required' })}
                 placeholder="Enter your complete address or use current location..."
