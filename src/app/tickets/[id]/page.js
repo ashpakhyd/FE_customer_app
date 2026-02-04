@@ -90,7 +90,63 @@ export default function TicketDetails({ params }) {
         </div>
       </div>
 
-      <div className="p-4 max-w-md mx-auto">
+      <div className="p-4 max-w-md mx-auto space-y-4">
+        {/* Technician & OTP Card */}
+        <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <span className="text-2xl">👨‍🔧</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">Service Technician</h3>
+                <p className="text-blue-100 text-sm">Will be assigned soon</p>
+              </div>
+            </div>
+          </div>
+          
+          {ticket?.otp && ticket?.status !== 'COMPLETED' && (
+            <div>
+              <p className="text-blue-100 text-sm mb-2">Service OTP</p>
+              <div className="flex space-x-2 justify-center">
+                {ticket.otp.split('').map((digit, index) => (
+                  <div key={index} className="w-10 h-12 bg-white/20 rounded-lg flex items-center justify-center">
+                    <span className="text-xl font-bold">{digit}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-blue-100 text-xs text-center mt-2">Share this OTP with the technician</p>
+            </div>
+          )}
+        </div>
+
+        {/* Final OTP Card for Completed Status */}
+        {ticket?.finalOTP && ticket?.status === 'COMPLETED' && (
+          <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <span className="text-2xl">✅</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-lg">Service Completed</h3>
+                <p className="text-green-100 text-sm">Final verification OTP</p>
+              </div>
+            </div>
+            
+            <div className="bg-white/10 rounded-xl p-4">
+              <p className="text-green-100 text-sm mb-3 text-center">Final OTP to close ticket</p>
+              <div className="flex space-x-1 justify-center">
+                {ticket.finalOTP.split('').map((digit, index) => (
+                  <div key={index} className="w-8 h-10 bg-white/30 rounded border-2 border-white/40 flex items-center justify-center">
+                    <span className="text-lg font-mono font-bold">{digit}</span>
+                  </div>
+                ))}
+              </div>
+              <p className="text-green-100 text-xs text-center mt-3">Provide this OTP to confirm service completion</p>
+            </div>
+          </div>
+        )}
+
         <div className="bg-white rounded-2xl p-6 shadow-sm space-y-4">
           <div className="flex items-start justify-between">
             <div>
