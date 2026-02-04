@@ -91,7 +91,8 @@ export default function TicketDetails({ params }) {
       </div>
 
       <div className="p-4 max-w-md mx-auto space-y-4">
-        {/* Technician & OTP Card */}
+        {/* Technician & OTP Card - Hide when finalOTP is shown */}
+        {!(ticket?.finalOTP && ticket?.status === 'IN_PROGRESS') && (
         <div className="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center space-x-3">
@@ -119,9 +120,10 @@ export default function TicketDetails({ params }) {
             </div>
           )}
         </div>
+        )}
 
-        {/* Final OTP Card for Completed Status */}
-        {ticket?.finalOTP && ticket?.status === 'COMPLETED' && (
+        {/* Final OTP Card for IN_PROGRESS Status */}
+        {ticket?.finalOTP && ticket?.status === 'IN_PROGRESS' && (
           <div className="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white shadow-lg">
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
