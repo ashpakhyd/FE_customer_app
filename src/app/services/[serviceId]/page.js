@@ -2,6 +2,17 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
+import { GiWashingMachine } from 'react-icons/gi';
+import { TbFridge } from 'react-icons/tb';
+import { MdMicrowave } from 'react-icons/md';
+import { MdCleaningServices } from 'react-icons/md';
+import { TbAirConditioning } from 'react-icons/tb';
+import { PiTelevisionSimpleBold } from 'react-icons/pi';
+import { IoSettingsOutline } from 'react-icons/io5';
+import { MdElectricalServices } from 'react-icons/md';
+import { MdConstruction } from 'react-icons/md';
+import { IoIosBulb } from 'react-icons/io';
+import { GiCeilingLight } from 'react-icons/gi';
 
 export default function ServiceCategories({ params }) {
   const router = useRouter();
@@ -12,24 +23,24 @@ export default function ServiceCategories({ params }) {
       name: 'Electrician',
       icon: '⚡',
       categories: [
-        { id: 'wiring', name: 'Wiring & Installation', icon: '🔌', desc: 'New wiring, switches, outlets' },
-        { id: 'repair', name: 'Electrical Repair', icon: '🔧', desc: 'Fix electrical issues' },
-        { id: 'lighting', name: 'Lighting Solutions', icon: '💡', desc: 'LED, bulbs, fixtures' },
-        { id: 'fan', name: 'Fan Installation', icon: '🌀', desc: 'Ceiling & wall fans' },
-        { id: 'other', name: 'Other', icon: '⚙️', desc: 'Other electrical services' }
+        { id: 'wiring', name: 'Wiring & Installation', icon: <MdElectricalServices />, desc: 'New wiring, switches, outlets' },
+        { id: 'repair', name: 'Electrical Repair', icon: <MdConstruction />, desc: 'Fix electrical issues' },
+        { id: 'lighting', name: 'Lighting Solutions', icon: <IoIosBulb />, desc: 'LED, bulbs, fixtures' },
+        { id: 'fan', name: 'Fan Installation', icon: <GiCeilingLight />, desc: 'Ceiling & wall fans' },
+        { id: 'other', name: 'Other', icon: <IoSettingsOutline />, desc: 'Other electrical services' }
       ]
     },
     appliances: {
       name: 'Appliances Repair',
       icon: '🔧',
       categories: [
-        { id: 'washing-machine', name: 'Washing Machine', icon: '🧺', desc: 'Repair & maintenance' },
-        { id: 'refrigerator', name: 'Refrigerator', icon: '❄️', desc: 'Cooling issues, repair' },
-        { id: 'microwave', name: 'Microwave', icon: '📱', desc: 'Heating & repair' },
-        { id: 'dishwasher', name: 'Dishwasher', icon: '🍽️', desc: 'Cleaning & repair' },
-        { id: 'ac', name: 'Air Conditioner', icon: '❄️', desc: 'AC repair & service' },
-        { id: 'tv', name: 'Television', icon: '📺', desc: 'TV repair & setup' },
-        { id: 'other', name: 'Other', icon: '⚙️', desc: 'Other appliance services' }
+        { id: 'washing-machine', name: 'Washing Machine', icon: <GiWashingMachine />, desc: 'Repair & maintenance' },
+        { id: 'refrigerator', name: 'Refrigerator', icon: <TbFridge />, desc: 'Cooling issues, repair' },
+        { id: 'microwave', name: 'Microwave', icon: <MdMicrowave />, desc: 'Heating & repair' },
+        { id: 'dishwasher', name: 'Dishwasher', icon: <MdCleaningServices />, desc: 'Cleaning & repair' },
+        { id: 'ac', name: 'Air Conditioner', icon: <TbAirConditioning />, desc: 'AC repair & service' },
+        { id: 'tv', name: 'Television', icon: <PiTelevisionSimpleBold />, desc: 'TV repair & setup' },
+        { id: 'other', name: 'Other', icon: <IoSettingsOutline />, desc: 'Other appliance services' }
       ]
     },
     plumber: {
@@ -256,7 +267,7 @@ export default function ServiceCategories({ params }) {
             >
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                  <span className="text-xl">{category.icon}</span>
+                  <span className="text-xl">{typeof category.icon === 'string' ? category.icon : <span className="text-2xl">{category.icon}</span>}</span>
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-black mb-1">{category.name}</h3>

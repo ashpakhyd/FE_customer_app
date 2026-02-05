@@ -34,16 +34,21 @@ function CreateTicketForm() {
   const [loadingLocation, setLoadingLocation] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
+  const [uploadController, setUploadController] = useState(null);
   const router = useRouter();
 
-  const uploadToCloudinary = async (file) => {
+  const uploadToCloudinary = async (file, controller) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('upload_preset', 'ticket_uploads'); // Create this preset in Cloudinary
     
     const response = await fetch(
       `https://api.cloudinary.com/v1_1/dsrmkwxbm/image/upload`,
-      { method: 'POST', body: formData }
+      { 
+        method: 'POST', 
+        body: formData,
+        signal: controller.signal
+      }
     );
     
     return response.json();
@@ -53,12 +58,14 @@ function CreateTicketForm() {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
     
+    const controller = new AbortController();
+    setUploadController(controller);
     setUploadingFiles(true);
     const uploadedFiles = [];
     
     try {
       for (const file of files) {
-        const result = await uploadToCloudinary(file);
+        const result = await uploadToCloudinary(file, controller);
         uploadedFiles.push({
           name: file.name,
           url: result.secure_url,
@@ -67,9 +74,22 @@ function CreateTicketForm() {
       }
       setSelectedFiles([...selectedFiles, ...uploadedFiles]);
     } catch (error) {
-      setError('Failed to upload files. Please try again.');
+      if (error.name === 'AbortError') {
+        setError('Upload cancelled');
+      } else {
+        setError('Failed to upload files. Please try again.');
+      }
     } finally {
       setUploadingFiles(false);
+      setUploadController(null);
+    }
+  };
+
+  const cancelUpload = () => {
+    if (uploadController) {
+      uploadController.abort();
+      setUploadingFiles(false);
+      setUploadController(null);
     }
   };
 
@@ -328,15 +348,34 @@ function CreateTicketForm() {
               />
               
               {uploadingFiles && (
-                <div className="flex items-center space-x-2 text-blue-600">
-                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                  <span className="text-sm">Uploading files...</span>
+                <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center space-x-2 text-blue-600">
+                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm">Uploading files...</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={cancelUpload}
+                    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
+                    title="Cancel upload"
+                  >
+                    <span className="text-xs">✕</span>
+                  </button>
                 </div>
               )}
               
               {selectedFiles.length > 0 && (
                 <div className="space-y-2">
-                  <p className="text-sm font-medium text-gray-700">Uploaded Files:</p>
+                  <div className="flex items-center justify-between">
+                    <p className="text-sm font-medium text-gray-700">Uploaded Files:</p>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedFiles([])}
+                      className="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded border border-red-300 hover:bg-red-50 transition-colors"
+                    >
+                      Clear All
+                    </button>
+                  </div>
                   {selectedFiles.map((file, index) => (
                     <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
                       <div className="flex items-center space-x-2">
@@ -369,10 +408,10 @@ function CreateTicketForm() {
           
           <button
             type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full"
+            disabled={isLoading || uploadingFiles}
+            className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Creating Ticket...' : 'Create Ticket'}
+            {isLoading ? 'Creating Ticket...' : uploadingFiles ? 'Uploading Files...' : 'Create Ticket'}
           </button>
         </form>
       </div>
