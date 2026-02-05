@@ -2,6 +2,12 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { MdElectricBolt, MdConstruction, MdPlumbing, MdFormatPaint, MdCleaningServices, MdCarpenter } from 'react-icons/md';
+import { GiPlantSeed, GiBugNet, GiHouse, GiCookingPot } from 'react-icons/gi';
+import { TbAirConditioning } from 'react-icons/tb';
+import { FaUserMd, FaBalanceScale, FaBook, FaShieldAlt, FaCar, FaCamera, FaCalendarAlt } from 'react-icons/fa';
+import { IoSparkles } from 'react-icons/io5';
+import { BiSpa } from 'react-icons/bi';
 
 export default function Services() {
   const router = useRouter();
@@ -19,26 +25,26 @@ export default function Services() {
   };
 
   const services = [
-    { id: 'electrician', name: 'Electrician', icon: '⚡', color: 'bg-yellow-100', iconBg: 'bg-yellow-400' },
-    { id: 'appliances', name: 'Appliances Repair', icon: '🔧', color: 'bg-blue-100', iconBg: 'bg-blue-400' },
-    { id: 'plumber', name: 'Plumber', icon: '🚿', color: 'bg-cyan-100', iconBg: 'bg-cyan-400' },
-    { id: 'carpenter', name: 'Carpenter', icon: '🔨', color: 'bg-orange-100', iconBg: 'bg-orange-400' },
-    { id: 'painter', name: 'Painter', icon: '🎨', color: 'bg-purple-100', iconBg: 'bg-purple-400' },
-    { id: 'cleaner', name: 'Cleaning Service', icon: '🧹', color: 'bg-green-100', iconBg: 'bg-green-400' },
-    { id: 'gardener', name: 'Gardener', icon: '🌱', color: 'bg-emerald-100', iconBg: 'bg-emerald-400' },
-    { id: 'pest-control', name: 'Pest Control', icon: '🐛', color: 'bg-red-100', iconBg: 'bg-red-400' },
-    { id: 'ac-repair', name: 'AC Repair', icon: '❄️', color: 'bg-sky-100', iconBg: 'bg-sky-400' },
-    { id: 'builder', name: 'Builder', icon: '🏗️', color: 'bg-stone-100', iconBg: 'bg-stone-400' },
-    { id: 'doctor', name: 'Doctor', icon: '👨‍⚕️', color: 'bg-pink-100', iconBg: 'bg-pink-400' },
-    { id: 'advocate', name: 'Advocate', icon: '⚖️', color: 'bg-indigo-100', iconBg: 'bg-indigo-400' },
-    { id: 'tutor', name: 'Home Tutor', icon: '📚', color: 'bg-amber-100', iconBg: 'bg-amber-400' },
-    { id: 'security', name: 'Security Guard', icon: '🛡️', color: 'bg-gray-100', iconBg: 'bg-gray-400' },
-    { id: 'driver', name: 'Driver', icon: '🚗', color: 'bg-blue-100', iconBg: 'bg-blue-500' },
-    { id: 'cook', name: 'Cook/Chef', icon: '👨‍🍳', color: 'bg-orange-100', iconBg: 'bg-orange-500' },
-    { id: 'beautician', name: 'Beautician', icon: '💄', color: 'bg-rose-100', iconBg: 'bg-rose-400' },
-    { id: 'massage', name: 'Massage Therapist', icon: '💆', color: 'bg-violet-100', iconBg: 'bg-violet-400' },
-    { id: 'photographer', name: 'Photographer', icon: '📸', color: 'bg-teal-100', iconBg: 'bg-teal-400' },
-    { id: 'event-planner', name: 'Event Planner', icon: '🎉', color: 'bg-fuchsia-100', iconBg: 'bg-fuchsia-400' }
+    { id: 'electrician', name: 'Electrician', icon: <MdElectricBolt />, color: 'bg-yellow-100', iconBg: 'bg-yellow-400' },
+    { id: 'appliances', name: 'Appliances Repair', icon: <MdConstruction />, color: 'bg-blue-100', iconBg: 'bg-blue-400' },
+    { id: 'plumber', name: 'Plumber', icon: <MdPlumbing />, color: 'bg-cyan-100', iconBg: 'bg-cyan-400' },
+    { id: 'carpenter', name: 'Carpenter', icon: <MdCarpenter />, color: 'bg-orange-100', iconBg: 'bg-orange-400' },
+    { id: 'painter', name: 'Painter', icon: <MdFormatPaint />, color: 'bg-purple-100', iconBg: 'bg-purple-400' },
+    { id: 'cleaner', name: 'Cleaning Service', icon: <MdCleaningServices />, color: 'bg-green-100', iconBg: 'bg-green-400' },
+    { id: 'gardener', name: 'Gardener', icon: <GiPlantSeed />, color: 'bg-emerald-100', iconBg: 'bg-emerald-400' },
+    { id: 'pest-control', name: 'Pest Control', icon: <GiBugNet />, color: 'bg-red-100', iconBg: 'bg-red-400' },
+    { id: 'ac-repair', name: 'AC Repair', icon: <TbAirConditioning />, color: 'bg-sky-100', iconBg: 'bg-sky-400' },
+    { id: 'builder', name: 'Builder', icon: <GiHouse />, color: 'bg-stone-100', iconBg: 'bg-stone-400' },
+    { id: 'doctor', name: 'Doctor', icon: <FaUserMd />, color: 'bg-pink-100', iconBg: 'bg-pink-400' },
+    { id: 'advocate', name: 'Advocate', icon: <FaBalanceScale />, color: 'bg-indigo-100', iconBg: 'bg-indigo-400' },
+    { id: 'tutor', name: 'Home Tutor', icon: <FaBook />, color: 'bg-amber-100', iconBg: 'bg-amber-400' },
+    { id: 'security', name: 'Security Guard', icon: <FaShieldAlt />, color: 'bg-gray-100', iconBg: 'bg-gray-400' },
+    { id: 'driver', name: 'Driver', icon: <FaCar />, color: 'bg-blue-100', iconBg: 'bg-blue-500' },
+    { id: 'cook', name: 'Cook/Chef', icon: <GiCookingPot />, color: 'bg-orange-100', iconBg: 'bg-orange-500' },
+    { id: 'beautician', name: 'Beautician', icon: <IoSparkles />, color: 'bg-rose-100', iconBg: 'bg-rose-400' },
+    { id: 'massage', name: 'Massage Therapist', icon: <BiSpa />, color: 'bg-violet-100', iconBg: 'bg-violet-400' },
+    { id: 'photographer', name: 'Photographer', icon: <FaCamera />, color: 'bg-teal-100', iconBg: 'bg-teal-400' },
+    { id: 'event-planner', name: 'Event Planner', icon: <FaCalendarAlt />, color: 'bg-fuchsia-100', iconBg: 'bg-fuchsia-400' }
   ];
 
   return (
@@ -64,7 +70,7 @@ export default function Services() {
               className={`${service.color} rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform ${!activeServices.includes(service.id) ? 'opacity-60' : ''}`}
             >
               <div className={`w-12 h-12 ${service.iconBg} rounded-xl flex items-center justify-center mb-3`}>
-                <span className="text-xl">{service.icon}</span>
+                <span className="text-2xl">{service.icon}</span>
               </div>
               <h3 className="font-semibold text-black text-sm mb-1">{service.name}</h3>
               <p className="text-xs text-gray-600">Professional service</p>
