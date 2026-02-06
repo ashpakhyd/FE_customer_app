@@ -73,6 +73,13 @@ export const ticketsApi = createApi({
       }),
       invalidatesTags: ['Notification'],
     }),
+    deleteTicket: builder.mutation({
+      query: (id) => ({
+        url: `tickets/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Ticket'],
+    }),
   }),
 });
 
@@ -87,4 +94,5 @@ export const {
   useGetMyRatingsQuery,
   useGetNotificationsQuery,
   useMarkNotificationReadMutation,
+  useDeleteTicketMutation,
 } = ticketsApi;
