@@ -1,6 +1,6 @@
 {
-  "name": "Nestify",
-  "short_name": "Nestify",
+  "name": "Fixoo - Just fix it",
+  "short_name": "Fixoo",
   "description": "Mobile-first Your Home, Sorted.",
   "start_url": "/",
   "display": "standalone",
@@ -9,12 +9,12 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/nestify.png",
+      "src": "/fixoo.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/nestify.png",
+      "src": "/fixoo.png",
       "sizes": "512x512",
       "type": "image/png"
     }
