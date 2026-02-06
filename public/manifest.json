@@ -9,12 +9,12 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/fixoo.png",
+      "src": "/fix.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/fixoo.png",
+      "src": "/fix.png",
       "sizes": "512x512",
       "type": "image/png"
     }
