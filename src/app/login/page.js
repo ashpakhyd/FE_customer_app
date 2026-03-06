@@ -4,9 +4,10 @@ import { useForm } from 'react-hook-form';
 import { useLoginMutation } from '../../store/slices/authApi';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import LoadingSpinner from '../../components/LoadingSpinner';
 
 export default function Login() {
-  const { register, handleSubmit, formState: { errors } } = useForm();
+  const { register, handleSubmit, formState: { errors }, setValue } = useForm();
   const [login, { isLoading }] = useLoginMutation();
   const [error, setError] = useState('');
   const [isClient, setIsClient] = useState(false);
@@ -19,14 +20,19 @@ export default function Login() {
     if (!onboardingCompleted) {
       router.push('/onboarding');
     }
-  }, [router]);
+
+    // Load saved login data from registration
+    const loginData = sessionStorage.getItem('loginData');
+    if (loginData) {
+      const data = JSON.parse(loginData);
+      setValue('phone', data.phone);
+      setValue('password', data.password);
+      sessionStorage.removeItem('loginData');
+    }
+  }, [router, setValue]);
 
   if (!isClient) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
+    return <LoadingSpinner fullScreen />;
   }
 
   const onSubmit = async (data) => {

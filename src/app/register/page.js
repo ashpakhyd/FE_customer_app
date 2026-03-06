@@ -20,19 +20,16 @@ export default function Register() {
       return;
     }
 
-    try {
-      await registerUser({
-        name: data.name,
-        phone: data.phone,
-        email: data.email,
-        password: data.password,
-        role: 'CUSTOMER'
-      }).unwrap();
-      
-      router.push(`/otp?phone=${data.phone}&type=register`);
-    } catch (error) {
-      setError('Registration failed. Please try again.');
-    }
+    // Store data in sessionStorage and redirect to verify-phone
+    sessionStorage.setItem('registerData', JSON.stringify({
+      name: data.name,
+      phone: data.phone,
+      email: data.email,
+      password: data.password,
+      role: 'CUSTOMER'
+    }));
+    
+    router.push(`/verify-phone?phone=${data.phone}`);
   };
 
   return (
@@ -56,17 +53,27 @@ export default function Register() {
           {errors.name && <p className="text-red-500 text-sm">{errors.name.message}</p>}
           
           <input
-            {...register('phone', { required: 'Phone is required' })}
+            {...register('phone', { 
+              required: 'Phone number is required',
+              pattern: {
+                value: /^[6-9]\d{9}$/,
+                message: 'Enter valid 10-digit mobile number'
+              }
+            })}
             type="tel"
             placeholder="Phone Number"
             className="input-field"
+            maxLength="10"
           />
           {errors.phone && <p className="text-red-500 text-sm">{errors.phone.message}</p>}
           
           <input
             {...register('email', { 
               required: 'Email is required',
-              pattern: { value: /^[^@]+@[^@]+\.[^@]+$/, message: 'Invalid email' }
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: 'Enter valid email address'
+              }
             })}
             type="email"
             placeholder="Email Address"
@@ -75,7 +82,14 @@ export default function Register() {
           {errors.email && <p className="text-red-500 text-sm">{errors.email.message}</p>}
           
           <input
-            {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password must be at least 6 characters' } })}
+            {...register('password', { 
+              required: 'Password is required', 
+              minLength: { value: 6, message: 'Password must be at least 6 characters' },
+              pattern: {
+                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
+                message: 'Password must contain uppercase, lowercase and number'
+              }
+            })}
             type="password"
             placeholder="Password"
             className="input-field"

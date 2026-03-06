@@ -50,6 +50,14 @@ export default function Profile() {
               {profile?.isVerified ? 'Verified' : 'Not Verified'}
             </span>
           </div>
+          {!profile?.isVerified && (
+            <button
+              onClick={() => window.open(`https://wa.me/918623038373?text=${encodeURIComponent('Verify me')}`, '_blank')}
+              className="mt-4 bg-yellow-400 text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-500 transition-colors"
+            >
+              Click to Verify
+            </button>
+          )}
         </div>
 
         {/* Menu Items */}
