@@ -39,7 +39,7 @@ export default function Login() {
     setError('');
 
     try {
-      const result = await login({ ...data, role: 'CUSTOMER' }).unwrap();
+      const result = await login({ ...data, appType: 'customer' }).unwrap();
       localStorage.setItem('token', result.token);
       router.push('/');
     } catch (error) {

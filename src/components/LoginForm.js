@@ -12,7 +12,7 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await login({ phone, password, role: 'CUSTOMER' }).unwrap();
+      const result = await login({ phone, password, appType: 'customer' }).unwrap();
       localStorage.setItem('token', result.token);
       toast.success('Login successful!');
     } catch (error) {
