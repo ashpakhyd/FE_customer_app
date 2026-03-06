@@ -39,11 +39,11 @@ export default function Login() {
     setError('');
 
     try {
-      const result = await login(data).unwrap();
+      const result = await login({ ...data, role: 'CUSTOMER' }).unwrap();
       localStorage.setItem('token', result.token);
       router.push('/');
     } catch (error) {
-      setError('Invalid phone number or password');
+      setError(error?.data?.message || 'Invalid phone number or password');
     }
   };
 

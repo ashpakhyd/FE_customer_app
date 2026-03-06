@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useLoginMutation } from '../store/slices/authApi';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function LoginForm() {
   const [phone, setPhone] = useState('');
@@ -11,15 +12,17 @@ export default function LoginForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const result = await login({ phone, password }).unwrap();
+      const result = await login({ phone, password, role: 'CUSTOMER' }).unwrap();
       localStorage.setItem('token', result.token);
+      toast.success('Login successful!');
     } catch (error) {
-      console.error('Login failed:', error);
+      toast.error(error?.data?.message || 'Login failed');
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
+      <Toaster position="top-center" />
       <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
         <h1 className="text-2xl font-bold text-center mb-6">Login</h1>
         <input
