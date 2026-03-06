@@ -43,6 +43,13 @@ export default function ServiceCategories({ params }) {
         { id: 'other', name: 'Other', icon: <IoSettingsOutline />, desc: 'Other appliance services' }
       ]
     },
+    'car-service': {
+      name: 'Car Service',
+      icon: '🚗',
+      categories: [
+        { id: 'ac-repair', name: 'AC Repair', icon: '❄️', desc: 'Car AC service' }
+      ]
+    },
     plumber: {
       name: 'Plumber',
       icon: '🚿',

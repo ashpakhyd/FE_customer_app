@@ -9,7 +9,7 @@ export default function WashingMachineService() {
     {
       id: 'installation',
       name: 'Installation & Setup',
-      price: '₹800 - ₹1,500',
+      price: '₹300 - ₹1,000',
       icon: '⚙️',
       desc: 'Complete washing machine installation',
       features: ['Unboxing & setup', 'Water connection', 'Drain setup', 'Test run']
@@ -17,7 +17,7 @@ export default function WashingMachineService() {
     {
       id: 'repair',
       name: 'Repair Service',
-      price: '₹400 - ₹1,800',
+      price: '₹350 - ₹1,800',
       icon: '🔧',
       desc: 'Fix all washing machine issues',
       features: ['Not starting', 'Water not draining', 'Excessive vibration', 'Door problems']
@@ -25,7 +25,7 @@ export default function WashingMachineService() {
     {
       id: 'maintenance',
       name: 'Deep Cleaning',
-      price: '₹600 - ₹1,000',
+      price: '₹500 - ₹1,000',
       icon: '🧽',
       desc: 'Complete machine cleaning',
       features: ['Drum cleaning', 'Filter cleaning', 'Pipe cleaning', 'Performance check']
@@ -33,7 +33,7 @@ export default function WashingMachineService() {
     {
       id: 'parts',
       name: 'Parts Replacement',
-      price: '₹300 - ₹2,500',
+      price: '₹350 - ₹2,500',
       icon: '🔩',
       desc: 'Replace faulty components',
       features: ['Motor repair', 'Belt replacement', 'Pump replacement', 'Control panel']

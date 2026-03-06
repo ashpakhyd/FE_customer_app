@@ -7,17 +7,9 @@ export default function RefrigeratorService() {
 
   const fridgeServices = [
     {
-      id: 'installation',
-      name: 'Installation & Setup',
-      price: '₹500 - ₹1,200',
-      icon: '⚙️',
-      desc: 'Professional fridge installation',
-      features: ['Unboxing & placement', 'Leveling', 'Power connection', 'Initial setup']
-    },
-    {
       id: 'repair',
       name: 'Repair Service',
-      price: '₹600 - ₹2,500',
+      price: '₹350 - ₹2,500',
       icon: '🔧',
       desc: 'Fix all refrigerator problems',
       features: ['Not cooling', 'Ice formation', 'Strange noise', 'Door seal issues']
@@ -25,7 +17,7 @@ export default function RefrigeratorService() {
     {
       id: 'gas-refill',
       name: 'Gas Refilling',
-      price: '₹1,500 - ₹3,500',
+      price: '₹1,500 - ₹2,500',
       icon: '❄️',
       desc: 'Refrigerant gas refilling',
       features: ['Gas leak detection', 'Vacuum process', 'Gas refilling', 'Cooling test']
@@ -33,7 +25,7 @@ export default function RefrigeratorService() {
     {
       id: 'maintenance',
       name: 'Deep Cleaning',
-      price: '₹400 - ₹800',
+      price: '₹350 - ₹1,200',
       icon: '🧽',
       desc: 'Complete fridge cleaning',
       features: ['Interior cleaning', 'Coil cleaning', 'Drain cleaning', 'Deodorizing']

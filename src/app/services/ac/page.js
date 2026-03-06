@@ -11,10 +11,10 @@ export default function ACService() {
     {
       id: 'installation',
       name: 'AC Installation',
-      price: '₹1,500 - ₹3,000',
+      price: '₹1,000 - ₹1,500',
       icon: '⚙️',
       desc: 'Professional AC installation service',
-      features: ['Wall mounting', 'Pipe connection', 'Gas filling', '1 year warranty']
+      features: ['Wall mounting', 'Pipe connection']
     },
     {
       id: 'repair',
@@ -27,7 +27,7 @@ export default function ACService() {
     {
       id: 'maintenance',
       name: 'AC Service & Cleaning',
-      price: '₹800 - ₹1,200',
+      price: '₹400 - ₹2,000',
       icon: '🧽',
       desc: 'Complete AC maintenance',
       features: ['Deep cleaning', 'Filter replacement', 'Gas check', 'Performance test']
@@ -35,7 +35,7 @@ export default function ACService() {
     {
       id: 'gas-refill',
       name: 'Gas Refilling',
-      price: '₹2,000 - ₹4,000',
+      price: '₹2,000 - ₹4,500',
       icon: '❄️',
       desc: 'AC gas refilling service',
       features: ['Gas leak detection', 'Vacuum process', 'Gas refilling', 'Cooling test']

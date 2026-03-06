@@ -13,7 +13,7 @@ export default function Services() {
   const router = useRouter();
   const [showToast, setShowToast] = useState(false);
 
-  const activeServices = ['electrician', 'appliances'];
+  const activeServices = ['electrician', 'appliances', 'car-service'];
 
   const handleServiceClick = (serviceId) => {
     if (activeServices.includes(serviceId)) {
@@ -27,6 +27,7 @@ export default function Services() {
   const services = [
     { id: 'electrician', name: 'Electrician', icon: <MdElectricBolt />, color: 'bg-yellow-100', iconBg: 'bg-yellow-400' },
     { id: 'appliances', name: 'Appliances Repair', icon: <MdConstruction />, color: 'bg-blue-100', iconBg: 'bg-blue-400' },
+    { id: 'car-service', name: 'Car Service', icon: <FaCar />, color: 'bg-red-100', iconBg: 'bg-red-500' },
     { id: 'plumber', name: 'Plumber', icon: <MdPlumbing />, color: 'bg-cyan-100', iconBg: 'bg-cyan-400' },
     { id: 'carpenter', name: 'Carpenter', icon: <MdCarpenter />, color: 'bg-orange-100', iconBg: 'bg-orange-400' },
     { id: 'painter', name: 'Painter', icon: <MdFormatPaint />, color: 'bg-purple-100', iconBg: 'bg-purple-400' },

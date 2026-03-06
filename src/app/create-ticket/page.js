@@ -307,6 +307,23 @@ function CreateTicketForm() {
           </div>
           
           <div>
+            <label className="block text-sm font-medium text-black mb-2">Alternate Phone Number</label>
+            <input
+              {...register('alternatePhone', { 
+                pattern: {
+                  value: /^[0-9]{10}$/,
+                  message: 'Enter valid 10 digit phone number'
+                }
+              })}
+              type="tel"
+              placeholder="e.g., 9876543210"
+              className="input-field"
+              maxLength="10"
+            />
+            {errors.alternatePhone && <p className="text-red-500 text-sm mt-1">{errors.alternatePhone.message}</p>}
+          </div>
+          
+          <div>
             <label className="block text-sm font-medium text-black mb-2">Service Address</label>
             <div className="space-y-2">
               <button
