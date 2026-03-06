@@ -84,6 +84,14 @@ export default function ServiceSubcategories({ params }) {
         { id: 'other-appliance', name: 'Other Appliance Service', desc: 'Any other appliance work' }
       ]
     },
+    'car-service': {
+      'ac-repair': [
+        { id: 'ac-gas-refill', name: 'AC Gas Refill', desc: 'Refrigerant recharge' },
+        { id: 'ac-not-cooling', name: 'AC Not Cooling', desc: 'Fix cooling issues' },
+        { id: 'ac-filter', name: 'AC Filter Cleaning', desc: 'Clean cabin air filter' },
+        { id: 'ac-compressor', name: 'AC Compressor Repair', desc: 'Fix AC compressor' }
+      ]
+    },
     plumber: {
       'pipe-repair': [
         { id: 'water-leak', name: 'Water Leakage', desc: 'Pipe leakage repair' },
@@ -557,6 +565,7 @@ export default function ServiceSubcategories({ params }) {
   const serviceNames = {
     electrician: 'Electrician',
     appliances: 'Appliances Repair',
+    'car-service': 'Car Service',
     plumber: 'Plumber',
     doctor: 'Doctor'
   };
@@ -574,6 +583,8 @@ export default function ServiceSubcategories({ params }) {
     dishwasher: 'Dishwasher',
     ac: 'Air Conditioner',
     other: 'Other',
+    // Car Service
+    'ac-repair': 'AC Repair',
     // Plumber
     'pipe-repair': 'Pipe Repair',
     bathroom: 'Bathroom Fitting',
