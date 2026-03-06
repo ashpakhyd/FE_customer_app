@@ -1,11 +1,11 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useRegisterMutation } from '../../store/slices/authApi';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
-export default function VerifyPhone() {
+function VerifyPhoneContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [phone, setPhone] = useState(searchParams.get('phone') || '');
@@ -99,5 +99,13 @@ export default function VerifyPhone() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyPhone() {
+  return (
+    <Suspense fallback={<LoadingSpinner fullScreen />}>
+      <VerifyPhoneContent />
+    </Suspense>
   );
 }
