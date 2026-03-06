@@ -1,7 +1,7 @@
 {
-  "name": "Fixoo - Just fix it",
-  "short_name": "Fixoo",
-  "description": "Mobile-first Your Home, Sorted.",
+  "name": "SD - Service Door",
+  "short_name": "SD",
+  "description": "Your Home, Sorted.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
@@ -9,12 +9,12 @@
   "orientation": "portrait-primary",
   "icons": [
     {
-      "src": "/fix.png",
+      "src": "/sd.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/fix.png",
+      "src": "/sd.png",
       "sizes": "512x512",
       "type": "image/png"
     }
