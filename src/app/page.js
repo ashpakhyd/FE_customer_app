@@ -75,7 +75,7 @@ export default function Home() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -85,7 +85,7 @@ export default function Home() {
   const onboardingCompleted = localStorage.getItem('onboardingCompleted');
   if (!onboardingCompleted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -93,16 +93,16 @@ export default function Home() {
 
   const unreadNotifications = notifications?.filter(n => !n.isRead).length || 0;
   const activeTickets = tickets?.filter(t => t.status !== 'COMPLETED').length || 0;
-  const featuredOffers = offersData?.offers?.slice(0, 2) || [];
+  const featuredOffers = offersData?.offers?.slice().reverse().slice(0, 2) || [];
 
   if (ticketsLoading) return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+    <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
+    <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white pb-20">
       {/* Notification Permission Popup */}
       {showNotificationPrompt && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -354,20 +354,30 @@ export default function Home() {
                   <div
                     key={offer._id}
                     onClick={() => router.push(`/offers/${offer._id}`)}
-                    className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-4 cursor-pointer hover:shadow-lg transition-shadow"
+                    className="bg-white rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
+                    <div className="flex items-center">
+                      {offer.photos && offer.photos.length > 0 && (
+                        <div className="w-24 h-24 shrink-0">
+                          <Image
+                            src={offer.photos[0]}
+                            alt={offer.title}
+                            width={96}
+                            height={96}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <div className="flex-1 p-4">
                         <div className="flex items-center space-x-2 mb-2">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">{discount}% OFF</span>
                         </div>
-                        <h3 className="font-bold text-black mb-1">{offer.title}</h3>
+                        <h3 className="font-bold text-black mb-1 text-sm">{offer.title}</h3>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm line-through text-black opacity-60">{offer.price.currency} {offer.price.original}</span>
-                          <span className="text-lg font-bold text-black">{offer.price.currency} {offer.price.discounted}</span>
+                          <span className="text-xs line-through text-gray-500">{offer.price.currency} {offer.price.original}</span>
+                          <span className="text-base font-bold text-yellow-600">{offer.price.currency} {offer.price.discounted}</span>
                         </div>
                       </div>
-                      <div className="text-black text-2xl">→</div>
                     </div>
                   </div>
                 );
@@ -376,7 +386,7 @@ export default function Home() {
           ) : (
             <div 
               onClick={() => router.push('/offers')}
-              className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-shadow"
+              className="bg-linear-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
