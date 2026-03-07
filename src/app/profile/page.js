@@ -116,6 +116,19 @@ export default function Profile() {
           </button>
 
           <button 
+            onClick={() => router.push('/delete-account')}
+            className="w-full bg-white rounded-2xl p-4 shadow-sm flex items-center justify-between"
+          >
+            <div className="flex items-center space-x-3">
+              <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+                <span className="text-lg">🗑️</span>
+              </div>
+              <span className="font-medium text-black">Delete Account</span>
+            </div>
+            <span className="text-gray-400">→</span>
+          </button>
+
+          <button 
             onClick={handleLogout}
             className="w-full bg-red-50 rounded-2xl p-4 shadow-sm flex items-center justify-between"
           >
