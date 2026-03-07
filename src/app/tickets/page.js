@@ -34,6 +34,22 @@ export default function Tickets() {
     }
   };
 
+  const getCategoryIcon = (appliance) => {
+    const applianceLower = appliance?.toLowerCase() || '';
+    if (applianceLower.includes('ac') || applianceLower.includes('air conditioner')) return '/icons/airConditioner.png';
+    if (applianceLower.includes('washing machine')) return '/icons/washing-machine.png';
+    if (applianceLower.includes('refrigerator') || applianceLower.includes('fridge')) return '/icons/refrigerator.png';
+    if (applianceLower.includes('television') || applianceLower.includes('tv')) return '/icons/television .png';
+    if (applianceLower.includes('microwave')) return '/icons/microwaves.png';
+    if (applianceLower.includes('dishwasher')) return '/icons/dishwasher .png';
+    if (applianceLower.includes('fan')) return '/icons/fan.png';
+    if (applianceLower.includes('electrician') || applianceLower.includes('electrical')) return '/icons/electrician.png';
+    if (applianceLower.includes('plumber') || applianceLower.includes('plumbing')) return '/icons/plumber.png';
+    if (applianceLower.includes('wiring')) return '/icons/wiring.png';
+    if (applianceLower.includes('car')) return '/icons/car-service.png';
+    return '/icons/other.png';
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
@@ -86,12 +102,17 @@ export default function Tickets() {
               onClick={() => router.push(`/tickets/${ticket._id}`)}
               className="bg-white rounded-2xl p-4 shadow-sm cursor-pointer"
             >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex-1">
+              <div className="flex items-start space-x-3 mb-3">
+                <img 
+                  src={getCategoryIcon(ticket.appliance)} 
+                  alt={ticket.appliance}
+                  className="w-12 h-12 object-contain flex-shrink-0"
+                />
+                <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-black mb-1">{ticket.title}</h3>
                   <p className="text-sm text-gray-600 line-clamp-2">{ticket.description}</p>
                 </div>
-                <div className="flex flex-col items-end space-y-2">
+                <div className="flex flex-col items-end space-y-2 flex-shrink-0">
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(ticket.status)}`}>
                     {ticket.status.replace('_', ' ')}
                   </span>
