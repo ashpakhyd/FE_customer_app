@@ -11,6 +11,7 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
+  const [isEnablingNotification, setIsEnablingNotification] = useState(false);
   const router = useRouter();
   
   useEffect(() => {
@@ -35,6 +36,7 @@ export default function Home() {
   }, [router]);
 
   const handleEnableNotifications = async () => {
+    setIsEnablingNotification(true);
     try {
       const fcmToken = await requestFCMToken();
       if (fcmToken) {
@@ -51,6 +53,8 @@ export default function Home() {
       }
     } catch (error) {
       console.error('Failed to enable notifications:', error);
+    } finally {
+      setIsEnablingNotification(false);
     }
   };
 
@@ -111,13 +115,22 @@ export default function Home() {
             <div className="space-y-3">
               <button
                 onClick={handleEnableNotifications}
-                className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold hover:bg-yellow-500 transition-colors"
+                disabled={isEnablingNotification}
+                className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold hover:bg-yellow-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
               >
-                Enable Notifications
+                {isEnablingNotification ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
+                    Enabling...
+                  </>
+                ) : (
+                  'Enable Notifications'
+                )}
               </button>
               <button
                 onClick={() => setShowNotificationPrompt(false)}
-                className="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+                disabled={isEnablingNotification}
+                className="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors disabled:opacity-60"
               >
                 Maybe Later
               </button>

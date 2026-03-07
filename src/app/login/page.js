@@ -12,6 +12,7 @@ export default function Login() {
   const [login, { isLoading }] = useLoginMutation();
   const [error, setError] = useState('');
   const [isClient, setIsClient] = useState(false);
+  const [isFCMLoading, setIsFCMLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function Login() {
       const result = await login({ ...data, appType: 'customer' }).unwrap();
       localStorage.setItem('token', result.token);
       
+      setIsFCMLoading(true);
       // Send FCM token to backend
       const fcmToken = await requestFCMToken();
       if (fcmToken) {
@@ -55,9 +57,11 @@ export default function Login() {
           body: JSON.stringify({ fcmToken })
         });
       }
+      setIsFCMLoading(false);
       
       router.push('/');
     } catch (error) {
+      setIsFCMLoading(false);
       setError(error?.data?.message || 'Invalid phone number or password');
     }
   };
@@ -98,10 +102,10 @@ export default function Login() {
 
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={isLoading || isFCMLoading}
             className="btn-primary w-full"
           >
-            {isLoading ? 'Signing In...' : 'Sign In'}
+            {isLoading ? 'Signing In...' : isFCMLoading ? 'Setting up...' : 'Sign In'}
           </button>
         </form>
 
