@@ -2,6 +2,7 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
+import BottomNavigation from '../../../../components/BottomNavigation';
 
 export default function ServiceSubcategories({ params }) {
   const router = useRouter();
@@ -731,6 +732,8 @@ export default function ServiceSubcategories({ params }) {
           ))}
         </div>
       </div>
+
+      <BottomNavigation />
     </div>
   );
 }

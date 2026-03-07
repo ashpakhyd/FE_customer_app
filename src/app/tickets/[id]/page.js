@@ -4,6 +4,7 @@ import { use, useState } from 'react';
 
 import { useGetTicketQuery, useDeleteTicketMutation } from '../../../store/slices/ticketsApi';
 import { useRouter } from 'next/navigation';
+import BottomNavigation from '../../../components/BottomNavigation';
 
 export default function TicketDetails({ params }) {
   const router = useRouter();
@@ -347,6 +348,8 @@ export default function TicketDetails({ params }) {
           </button>
         )}
       </div>
+
+      <BottomNavigation />
 
       {/* Delete Confirmation Modal */}
       {showDeleteModal && (

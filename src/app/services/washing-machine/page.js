@@ -1,6 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import BottomNavigation from '../../../components/BottomNavigation';
 
 export default function WashingMachineService() {
   const router = useRouter();
@@ -169,35 +170,7 @@ export default function WashingMachineService() {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
-        <div className="flex items-center justify-around py-2 max-w-md mx-auto">
-          <button onClick={() => router.push('/')} className="flex flex-col items-center py-2 px-4">
-            <div className="w-6 h-6 flex items-center justify-center mb-1">
-              <span className="text-gray-400 text-xs">🏠</span>
-            </div>
-            <span className="text-xs text-gray-400">Home</span>
-          </button>
-          <button onClick={() => router.push('/tickets')} className="flex flex-col items-center py-2 px-4">
-            <div className="w-6 h-6 flex items-center justify-center mb-1">
-              <span className="text-gray-400 text-xs">📋</span>
-            </div>
-            <span className="text-xs text-gray-400">Tickets</span>
-          </button>
-          <button onClick={() => router.push('/notifications')} className="flex flex-col items-center py-2 px-4">
-            <div className="w-6 h-6 flex items-center justify-center mb-1">
-              <span className="text-gray-400 text-xs">🔔</span>
-            </div>
-            <span className="text-xs text-gray-400">Alerts</span>
-          </button>
-          <button onClick={() => router.push('/profile')} className="flex flex-col items-center py-2 px-4">
-            <div className="w-6 h-6 flex items-center justify-center mb-1">
-              <span className="text-gray-400 text-xs">👤</span>
-            </div>
-            <span className="text-xs text-gray-400">Profile</span>
-          </button>
-        </div>
-      </div>
+      <BottomNavigation />
     </div>
   );
 }

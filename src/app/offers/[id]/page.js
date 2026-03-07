@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState, use } from 'react';
 import ImageGallery from '../../../components/ImageGallery';
 import FullScreenGallery from '../../../components/FullScreenGallery';
+import BottomNavigation from '../../../components/BottomNavigation';
 
 export default function OfferDetailsPage({ params }) {
   const router = useRouter();
@@ -189,6 +190,8 @@ export default function OfferDetailsPage({ params }) {
           )}
         </div>
       </div>
+
+      <BottomNavigation />
 
       {/* Full Screen Gallery Modal */}
       <FullScreenGallery 

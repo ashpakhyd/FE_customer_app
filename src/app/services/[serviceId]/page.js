@@ -8,6 +8,7 @@ import { MdElectricalServices } from 'react-icons/md';
 import { MdConstruction } from 'react-icons/md';
 import { IoIosBulb } from 'react-icons/io';
 import { GiCeilingLight } from 'react-icons/gi';
+import BottomNavigation from '../../../components/BottomNavigation';
 
 export default function ServiceCategories({ params }) {
   const router = useRouter();
@@ -291,6 +292,8 @@ export default function ServiceCategories({ params }) {
           ))}
         </div>
       </div>
+
+      <BottomNavigation />
     </div>
   );
 }
