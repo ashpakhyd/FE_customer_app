@@ -159,6 +159,11 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Developer Credit */}
+        <div className="text-right mt-2 max-w-md mx-auto">
+          <p className="text-xs text-gray-400">© 2024 Ashfaq Ahemad Shaikh</p>
+        </div>
+
         {/* Search */}
         <div className="mt-4 max-w-md mx-auto">
           <div className="relative">
@@ -484,6 +489,11 @@ export default function Home() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* Developer Footer */}
+      <div className="text-center py-3 pb-4">
+        <p className="text-xs text-gray-500">Developed by <span className="text-sm font-semibold text-yellow-600">Ashfaq Ahemad Shaikh</span></p>
       </div>
 
       {/* Bottom Navigation */}
