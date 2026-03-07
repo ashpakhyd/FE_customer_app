@@ -267,8 +267,8 @@ export default function Home() {
                         </div>
                         <h3 className="font-bold text-black mb-1">{offer.title}</h3>
                         <div className="flex items-center space-x-2">
-                          <span className="text-sm line-through text-black opacity-60">PKR {offer.price.original}</span>
-                          <span className="text-lg font-bold text-black">PKR {offer.price.discounted}</span>
+                          <span className="text-sm line-through text-black opacity-60">{offer.price.currency} {offer.price.original}</span>
+                          <span className="text-lg font-bold text-black">{offer.price.currency} {offer.price.discounted}</span>
                         </div>
                       </div>
                       <div className="text-black text-2xl">→</div>

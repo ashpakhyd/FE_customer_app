@@ -86,8 +86,8 @@ export default function OffersPage() {
                   
                   <div className="flex items-center justify-between mb-3">
                     <div>
-                      <span className="text-gray-400 line-through text-sm">PKR {offerData.price.original}</span>
-                      <span className="text-yellow-600 font-bold text-xl ml-2">PKR {offerData.price.discounted}</span>
+                      <span className="text-gray-400 line-through text-sm">{offerData.price.currency} {offerData.price.original}</span>
+                      <span className="text-yellow-600 font-bold text-xl ml-2">{offerData.price.currency} {offerData.price.discounted}</span>
                     </div>
                   </div>
 
