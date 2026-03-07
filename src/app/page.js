@@ -354,7 +354,7 @@ export default function Home() {
                   <div
                     key={offer._id}
                     onClick={() => router.push(`/offers/${offer._id}`)}
-                    className="bg-white rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                    className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
                   >
                     <div className="flex items-center">
                       {offer.photos && offer.photos.length > 0 && (
