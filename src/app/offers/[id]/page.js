@@ -54,11 +54,11 @@ export default function OfferDetailsPage({ params }) {
           <div className="space-y-2 text-sm text-left mb-6">
             <div className="flex justify-between">
               <span className="text-gray-600">Original Price:</span>
-              <span className="line-through">PKR {redemptionData.offer.price.original}</span>
+              <span className="line-through">INR {redemptionData.offer.price.original}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Discounted Price:</span>
-              <span className="font-bold text-yellow-600">PKR {redemptionData.offer.price.discounted}</span>
+              <span className="font-bold text-yellow-600">{redemptionData.offer.price.currency} {redemptionData.offer.price.discounted}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Valid Until:</span>
@@ -118,11 +118,11 @@ export default function OfferDetailsPage({ params }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Original Price</p>
-                <p className="text-lg line-through text-gray-400">PKR {offer.price.original}</p>
+                <p className="text-lg line-through text-gray-400">{redemptionData.offer.price.currency} {offer.price.original}</p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-600 mb-1">Offer Price</p>
-                <p className="text-3xl font-bold text-yellow-600">PKR {offer.price.discounted}</p>
+                <p className="text-3xl font-bold text-yellow-600">{redemptionData.offer.price.currency} {offer.price.discounted}</p>
               </div>
             </div>
           </div>
