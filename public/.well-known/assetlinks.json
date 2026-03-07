@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.custticket.app",
+    "sha256_cert_fingerprints": ["F4:AC:0C:3D:A7:AB:15:51:8C:D5:6B:A8:F8:D9:CE:D2:95:D1:D5:B5:5C:3B:C7:63:00:08:CA:C0:8E:8D:EA:E8"]
+  }
+}]

@@ -20,8 +20,15 @@ export const requestFCMToken = async () => {
       return null;
     }
 
+    // Check if running in TWA
+    const isTWA = window.matchMedia('(display-mode: standalone)').matches || 
+                  window.navigator.standalone || 
+                  document.referrer.includes('android-app://');
+
     // Request notification permission
     const permission = await Notification.requestPermission();
+    console.log('Notification permission:', permission);
+    
     if (permission !== 'granted') {
       console.log('Notification permission denied');
       return null;
@@ -31,9 +38,10 @@ export const requestFCMToken = async () => {
     const token = await getToken(messaging, {
       vapidKey: process.env.NEXT_PUBLIC_FIREBASE_VAPID_KEY,
     });
+    console.log('FCM Token obtained:', token ? 'Yes' : 'No');
     return token;
   } catch (error) {
-    console.warn('FCM Token Error (continuing without notifications):', error.message);
+    console.error('FCM Token Error:', error);
     return null;
   }
 };
