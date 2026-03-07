@@ -2,12 +2,7 @@
 
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
-import { GiWashingMachine } from 'react-icons/gi';
-import { TbFridge } from 'react-icons/tb';
-import { MdMicrowave } from 'react-icons/md';
-import { MdCleaningServices } from 'react-icons/md';
-import { TbAirConditioning } from 'react-icons/tb';
-import { PiTelevisionSimpleBold } from 'react-icons/pi';
+import Image from 'next/image';
 import { IoSettingsOutline } from 'react-icons/io5';
 import { MdElectricalServices } from 'react-icons/md';
 import { MdConstruction } from 'react-icons/md';
@@ -23,24 +18,24 @@ export default function ServiceCategories({ params }) {
       name: 'Electrician',
       icon: '⚡',
       categories: [
-        { id: 'wiring', name: 'Wiring & Installation', icon: <MdElectricalServices />, desc: 'New wiring, switches, outlets' },
-        { id: 'repair', name: 'Electrical Repair', icon: <MdConstruction />, desc: 'Fix electrical issues' },
-        { id: 'lighting', name: 'Lighting Solutions', icon: <IoIosBulb />, desc: 'LED, bulbs, fixtures' },
-        { id: 'fan', name: 'Fan Installation', icon: <GiCeilingLight />, desc: 'Ceiling & wall fans' },
-        { id: 'other', name: 'Other', icon: <IoSettingsOutline />, desc: 'Other electrical services' }
+        { id: 'wiring', name: 'Wiring & Installation', icon: '/icons/wiring.png', isImage: true, desc: 'New wiring, switches, outlets' },
+        { id: 'repair', name: 'Electrical Repair', icon: '/icons/electricalRepair.png', isImage: true, desc: 'Fix electrical issues' },
+        { id: 'lighting', name: 'Lighting Solutions', icon: '/icons/lightingSolutions.png', isImage: true, desc: 'LED, bulbs, fixtures' },
+        { id: 'fan', name: 'Fan Installation', icon: '/icons/fan.png', isImage: true, desc: 'Ceiling & wall fans' },
+        { id: 'other', name: 'Other', icon: '/icons/other.png', isImage: true, desc: 'Other electrical services' }
       ]
     },
     appliances: {
       name: 'Appliances Repair',
       icon: '🔧',
       categories: [
-        { id: 'washing-machine', name: 'Washing Machine', icon: <GiWashingMachine />, desc: 'Repair & maintenance' },
-        { id: 'refrigerator', name: 'Refrigerator', icon: <TbFridge />, desc: 'Cooling issues, repair' },
-        { id: 'microwave', name: 'Microwave', icon: <MdMicrowave />, desc: 'Heating & repair' },
-        { id: 'dishwasher', name: 'Dishwasher', icon: <MdCleaningServices />, desc: 'Cleaning & repair' },
-        { id: 'ac', name: 'Air Conditioner', icon: <TbAirConditioning />, desc: 'AC repair & service' },
-        { id: 'tv', name: 'Television', icon: <PiTelevisionSimpleBold />, desc: 'TV repair & setup' },
-        { id: 'other', name: 'Other', icon: <IoSettingsOutline />, desc: 'Other appliance services' }
+        { id: 'washing-machine', name: 'Washing Machine', icon: '/icons/washing-machine.png', isImage: true, desc: 'Repair & maintenance' },
+        { id: 'refrigerator', name: 'Refrigerator', icon: '/icons/refrigerator.png', isImage: true, desc: 'Cooling issues, repair' },
+        { id: 'microwave', name: 'Microwave', icon: '/icons/microwaves.png', isImage: true, desc: 'Heating & repair' },
+        { id: 'dishwasher', name: 'Dishwasher', icon: '/icons/dishwasher .png', isImage: true, desc: 'Cleaning & repair' },
+        { id: 'ac', name: 'Air Conditioner', icon: '/icons/airConditioner.png', isImage: true, desc: 'AC repair & service' },
+        { id: 'tv', name: 'Television', icon: '/icons/television .png', isImage: true, desc: 'TV repair & setup' },
+        { id: 'other', name: 'Other', icon: '/icons/other.png', isImage: true, desc: 'Other appliance services' }
       ]
     },
     'car-service': {
@@ -274,7 +269,17 @@ export default function ServiceCategories({ params }) {
             >
               <div className="flex items-center space-x-4">
                 <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
-                  <span className="text-xl">{typeof category.icon === 'string' ? category.icon : <span className="text-2xl">{category.icon}</span>}</span>
+                  {category.isImage ? (
+                    <Image 
+                      src={category.icon} 
+                      alt={category.name}
+                      width={40}
+                      height={40}
+                      className="object-contain"
+                    />
+                  ) : (
+                    <span className="text-xl">{typeof category.icon === 'string' ? category.icon : <span className="text-2xl">{category.icon}</span>}</span>
+                  )}
                 </div>
                 <div className="flex-1">
                   <h3 className="font-semibold text-black mb-1">{category.name}</h3>

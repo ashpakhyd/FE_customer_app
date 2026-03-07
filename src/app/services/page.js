@@ -2,7 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { MdElectricBolt, MdConstruction, MdPlumbing, MdFormatPaint, MdCleaningServices, MdCarpenter } from 'react-icons/md';
+import Image from 'next/image';
+import { MdFormatPaint, MdCleaningServices, MdCarpenter } from 'react-icons/md';
 import { GiPlantSeed, GiBugNet, GiHouse, GiCookingPot } from 'react-icons/gi';
 import { TbAirConditioning } from 'react-icons/tb';
 import { FaUserMd, FaBalanceScale, FaBook, FaShieldAlt, FaCar, FaCamera, FaCalendarAlt } from 'react-icons/fa';
@@ -25,10 +26,10 @@ export default function Services() {
   };
 
   const services = [
-    { id: 'electrician', name: 'Electrician', icon: <MdElectricBolt />, color: 'bg-yellow-100', iconBg: 'bg-yellow-400' },
-    { id: 'appliances', name: 'Appliances Repair', icon: <MdConstruction />, color: 'bg-blue-100', iconBg: 'bg-blue-400' },
-    { id: 'car-service', name: 'Car Service', icon: <FaCar />, color: 'bg-red-100', iconBg: 'bg-red-500' },
-    { id: 'plumber', name: 'Plumber', icon: <MdPlumbing />, color: 'bg-cyan-100', iconBg: 'bg-cyan-400' },
+    { id: 'electrician', name: 'Electrician', icon: '/icons/electrician.png', isImage: true, color: 'bg-yellow-100', iconBg: 'bg-yellow-400' },
+    { id: 'appliances', name: 'Appliances Repair', icon: '/icons/appliances.png', isImage: true, color: 'bg-blue-100', iconBg: 'bg-blue-400' },
+    { id: 'car-service', name: 'Car Service', icon: '/icons/car-service.png', isImage: true, color: 'bg-red-100', iconBg: 'bg-red-500' },
+    { id: 'plumber', name: 'Plumber', icon: '/icons/plumber.png', isImage: true, color: 'bg-cyan-100', iconBg: 'bg-cyan-400' },
     { id: 'carpenter', name: 'Carpenter', icon: <MdCarpenter />, color: 'bg-orange-100', iconBg: 'bg-orange-400' },
     { id: 'painter', name: 'Painter', icon: <MdFormatPaint />, color: 'bg-purple-100', iconBg: 'bg-purple-400' },
     { id: 'cleaner', name: 'Cleaning Service', icon: <MdCleaningServices />, color: 'bg-green-100', iconBg: 'bg-green-400' },
@@ -70,8 +71,18 @@ export default function Services() {
               onClick={() => handleServiceClick(service.id)}
               className={`${service.color} rounded-2xl p-4 cursor-pointer hover:scale-105 transition-transform ${!activeServices.includes(service.id) ? 'opacity-60' : ''}`}
             >
-              <div className={`w-12 h-12 ${service.iconBg} rounded-xl flex items-center justify-center mb-3`}>
-                <span className="text-2xl">{service.icon}</span>
+              <div className={`w-16 h-16 ${service.iconBg} rounded-xl flex items-center justify-center mb-3 ${service.isImage ? 'p-2' : ''}`}>
+                {service.isImage ? (
+                  <Image 
+                    src={service.icon} 
+                    alt={service.name}
+                    width={48}
+                    height={48}
+                    className="object-contain"
+                  />
+                ) : (
+                  <span className="text-2xl">{service.icon}</span>
+                )}
               </div>
               <h3 className="font-semibold text-black text-sm mb-1">{service.name}</h3>
               <p className="text-xs text-gray-600">Professional service</p>
