@@ -11,7 +11,6 @@ export default function PrivacyPolicy() {
           <li>Name, email address, and phone number</li>
           <li>Service address and location data</li>
           <li>Service request details and history</li>
-          <li>Payment information (processed securely)</li>
         </ul>
       </section>
 
@@ -20,7 +19,6 @@ export default function PrivacyPolicy() {
         <ul className="list-disc ml-6 text-gray-700">
           <li>To provide and manage home repair services</li>
           <li>To communicate about service requests</li>
-          <li>To process payments</li>
           <li>To send notifications about service status</li>
           <li>To improve our services</li>
         </ul>
@@ -29,8 +27,7 @@ export default function PrivacyPolicy() {
       <section className="mb-6">
         <h2 className="text-xl font-semibold mb-3">3. Data Security</h2>
         <p className="text-gray-700">
-          We use industry-standard encryption to protect your data during transmission and storage. 
-          All payment information is processed through secure payment gateways.
+          We use industry-standard encryption to protect your data during transmission and storage.
         </p>
       </section>
 
@@ -66,8 +63,8 @@ export default function PrivacyPolicy() {
           For privacy-related questions or data deletion requests, contact us at:
         </p>
         <p className="text-gray-700 mt-2">
-          Email: support@servicedoor.com<br/>
-          Phone: +91 9172605997
+          Email: ashpak.shaikh.dev@gmail.com<br/>
+          Phone: +91 8623038373
         </p>
       </section>
     </div>
