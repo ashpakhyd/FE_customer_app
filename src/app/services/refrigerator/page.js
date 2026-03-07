@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '../../../components/BottomNavigation';
+import Image from 'next/image';
 
 export default function RefrigeratorService() {
   const router = useRouter();
@@ -59,7 +60,13 @@ export default function RefrigeratorService() {
         <div className="bg-gradient-to-r from-green-400 to-green-500 rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <span className="text-3xl">🧊</span>
+              <Image 
+                src="/icons/refrigerator.png" 
+                alt="Refrigerator"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
             <div>
               <h2 className="text-xl font-bold mb-1">Refrigerator</h2>

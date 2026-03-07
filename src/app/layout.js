@@ -18,7 +18,6 @@ export const metadata = {
   title: "Help App",
   description: "Mobile-first customer management app",
   manifest: "/manifest.json",
-  themeColor: "#fbbf24",
 };
 
 export const viewport = {
@@ -26,7 +25,8 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: 'cover'
+  viewportFit: 'cover',
+  themeColor: '#fbbf24'
 };
 
 export default function RootLayout({ children }) {

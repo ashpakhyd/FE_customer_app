@@ -4,7 +4,7 @@ import { useGetMyTicketsQuery, useGetNotificationsQuery } from '../store/slices/
 import { useGetProfileQuery } from '../store/slices/authApi';
 import { useGetOffersQuery } from '../store/slices/offersApi';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { requestFCMToken } from '../config/firebase';
 import BottomNavigation from '../components/BottomNavigation';
 import Image from 'next/image';
@@ -15,6 +15,57 @@ export default function Home() {
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const [isEnablingNotification, setIsEnablingNotification] = useState(false);
   const router = useRouter();
+  
+  // Always call hooks first
+  const { data: tickets, isLoading: ticketsLoading, error: ticketsError } = useGetMyTicketsQuery(undefined, {
+    skip: !isClient
+  });
+  const { data: notifications, error: notificationsError } = useGetNotificationsQuery(undefined, {
+    skip: !isClient
+  });
+  const { data: profile, error: profileError } = useGetProfileQuery(undefined, {
+    skip: !isClient
+  });
+  const { data: offersData } = useGetOffersQuery({ type: 'available', limit: 3 }, {
+    skip: !isClient
+  });
+
+  const unreadNotifications = useMemo(() => 
+    notifications?.filter(n => !n.isRead).length || 0, 
+    [notifications]
+  );
+  
+  const activeTickets = useMemo(() => 
+    tickets?.filter(t => t.status !== 'COMPLETED').length || 0, 
+    [tickets]
+  );
+  
+  const featuredOffers = useMemo(() => 
+    offersData?.offers?.slice().reverse().slice(0, 2) || [], 
+    [offersData]
+  );
+
+  const handleEnableNotifications = useCallback(async () => {
+    setIsEnablingNotification(true);
+    try {
+      const fcmToken = await requestFCMToken();
+      if (fcmToken) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fcm/fcm-token`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ fcmToken })
+        });
+        setShowNotificationPrompt(false);
+      }
+    } catch (error) {
+      console.error('Failed to enable notifications:', error);
+    } finally {
+      setIsEnablingNotification(false);
+    }
+  }, []);
   
   useEffect(() => {
     setIsClient(true);
@@ -31,75 +82,18 @@ export default function Home() {
       return;
     }
 
-    // Check notification permission
     if ('Notification' in window && Notification.permission === 'default') {
       setTimeout(() => setShowNotificationPrompt(true), 2000);
     }
   }, [router]);
 
-  const handleEnableNotifications = async () => {
-    setIsEnablingNotification(true);
-    try {
-      const fcmToken = await requestFCMToken();
-      if (fcmToken) {
-        // Send token to backend
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fcm/fcm-token`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ fcmToken })
-        });
-        setShowNotificationPrompt(false);
-      }
-    } catch (error) {
-      console.error('Failed to enable notifications:', error);
-    } finally {
-      setIsEnablingNotification(false);
-    }
-  };
-
-  const { data: tickets, isLoading: ticketsLoading, error: ticketsError } = useGetMyTicketsQuery(undefined, {
-    skip: !isClient
-  });
-  const { data: notifications, error: notificationsError } = useGetNotificationsQuery(undefined, {
-    skip: !isClient
-  });
-  const { data: profile, error: profileError } = useGetProfileQuery(undefined, {
-    skip: !isClient
-  });
-  const { data: offersData } = useGetOffersQuery({ type: 'available', limit: 3 }, {
-    skip: !isClient
-  });
-
-  if (!isClient) {
+  if (!isClient || ticketsLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
-
-  // Check if onboarding is completed
-  const onboardingCompleted = localStorage.getItem('onboardingCompleted');
-  if (!onboardingCompleted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  const unreadNotifications = notifications?.filter(n => !n.isRead).length || 0;
-  const activeTickets = tickets?.filter(t => t.status !== 'COMPLETED').length || 0;
-  const featuredOffers = offersData?.offers?.slice().reverse().slice(0, 2) || [];
-
-  if (ticketsLoading) return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
-      <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
-    </div>
-  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
@@ -204,6 +198,27 @@ export default function Home() {
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
               <span className="text-2xl font-bold">{activeTickets}</span>
             </div>
+          </div>
+        </div>
+
+        {/* Repair Shop Card */}
+        <div className="gradient-card-blue rounded-2xl p-4 text-white mb-6" style={{background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #60a5fa'}}>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-xl">🏪</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Repair Shop</h3>
+                <p className="text-xs opacity-90">Visit our nearest repair shop</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => window.open('https://maps.google.com/?q=18.972206,76.751003', '_blank')}
+              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+            >
+              View Map
+            </button>
           </div>
         </div>
 
@@ -354,29 +369,33 @@ export default function Home() {
                   <div
                     key={offer._id}
                     onClick={() => router.push(`/offers/${offer._id}`)}
-                    className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                    className="bg-white rounded-2xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100"
                   >
-                    <div className="flex items-center">
-                      {offer.photos && offer.photos.length > 0 && (
-                        <div className="w-24 h-24 flex-shrink-0">
+                    <div className="flex items-center space-x-4">
+                      {offer.images && offer.images.length > 0 && (
+                        <div className="w-16 h-16 bg-yellow-100 rounded-xl flex-shrink-0 overflow-hidden">
                           <Image
-                            src={offer.photos[0]}
+                            src={offer.images[0]}
                             alt={offer.title}
-                            width={96}
-                            height={96}
+                            width={64}
+                            height={64}
                             className="w-full h-full object-cover"
                           />
                         </div>
                       )}
-                      <div className="flex-1 p-4">
+                      <div className="flex-1">
                         <div className="flex items-center space-x-2 mb-2">
                           <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">{discount}% OFF</span>
+                          <span className="bg-yellow-100 text-yellow-600 px-2 py-1 rounded-full text-xs font-medium">Limited</span>
                         </div>
                         <h3 className="font-bold text-black mb-1 text-sm">{offer.title}</h3>
                         <div className="flex items-center space-x-2">
-                          <span className="text-xs line-through text-gray-500">{offer.price.currency} {offer.price.original}</span>
-                          <span className="text-base font-bold text-yellow-600">{offer.price.currency} {offer.price.discounted}</span>
+                          <span className="text-xs line-through text-gray-400">{offer.price.currency} {offer.price.original}</span>
+                          <span className="text-sm font-bold text-yellow-600">{offer.price.currency} {offer.price.discounted}</span>
                         </div>
+                      </div>
+                      <div className="text-gray-400">
+                        <span className="text-lg">→</span>
                       </div>
                     </div>
                   </div>
@@ -386,23 +405,25 @@ export default function Home() {
           ) : (
             <div 
               onClick={() => router.push('/offers')}
-              className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-shadow"
+              className="bg-white rounded-2xl p-6 shadow-sm cursor-pointer hover:shadow-md transition-shadow border border-gray-100"
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <span className="text-2xl">🎁</span>
+                  <div className="flex items-center space-x-2 mb-3">
+                    <div className="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                      <span className="text-2xl">🎁</span>
+                    </div>
                     <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">HOT</span>
                   </div>
-                  <h3 className="text-xl font-bold text-black mb-1">Exclusive Deals</h3>
-                  <p className="text-sm text-black opacity-90 mb-3">Save up to 50% on services</p>
-                  <div className="inline-flex items-center space-x-2 bg-white bg-opacity-20 rounded-lg px-3 py-2">
-                    <span className="text-xs font-medium text-black">View All Offers</span>
-                    <span className="text-black">→</span>
+                  <h3 className="text-lg font-bold text-black mb-1">Exclusive Deals</h3>
+                  <p className="text-sm text-gray-600 mb-3">Save up to 50% on services</p>
+                  <div className="inline-flex items-center space-x-2 bg-yellow-100 rounded-lg px-3 py-2">
+                    <span className="text-xs font-medium text-yellow-600">View All Offers</span>
+                    <span className="text-yellow-600">→</span>
                   </div>
                 </div>
-                <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                  <span className="text-3xl">%</span>
+                <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <span className="text-2xl text-yellow-600">%</span>
                 </div>
               </div>
             </div>

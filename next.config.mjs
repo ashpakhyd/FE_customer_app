@@ -4,6 +4,9 @@ import withPWA from 'next-pwa';
 const nextConfig = {
   reactStrictMode: true,
   turbopack: {},
+  images: {
+    domains: ['res.cloudinary.com'],
+  },
 };
 
 export default withPWA({

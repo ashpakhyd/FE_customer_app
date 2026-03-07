@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import BottomNavigation from '../../../components/BottomNavigation';
+import Image from 'next/image';
 
 export default function ACService() {
   const router = useRouter();
@@ -69,7 +70,13 @@ export default function ACService() {
         <div className="bg-gradient-to-r from-blue-400 to-blue-500 rounded-2xl p-6 text-white">
           <div className="flex items-center space-x-4">
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-              <span className="text-3xl">❄️</span>
+              <Image 
+                src="/icons/airConditioner.png" 
+                alt="Air Conditioner"
+                width={40}
+                height={40}
+                className="object-contain"
+              />
             </div>
             <div>
               <h2 className="text-xl font-bold mb-1">AC Services</h2>
