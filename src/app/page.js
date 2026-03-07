@@ -75,7 +75,7 @@ export default function Home() {
 
   if (!isClient) {
     return (
-      <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -85,7 +85,7 @@ export default function Home() {
   const onboardingCompleted = localStorage.getItem('onboardingCompleted');
   if (!onboardingCompleted) {
     return (
-      <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
         <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
@@ -96,7 +96,7 @@ export default function Home() {
   const featuredOffers = offersData?.offers?.slice().reverse().slice(0, 2) || [];
 
   if (ticketsLoading) return (
-    <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
       <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
     </div>
   );
@@ -358,7 +358,7 @@ export default function Home() {
                   >
                     <div className="flex items-center">
                       {offer.photos && offer.photos.length > 0 && (
-                        <div className="w-24 h-24 shrink-0">
+                        <div className="w-24 h-24 flex-shrink-0">
                           <Image
                             src={offer.photos[0]}
                             alt={offer.title}
@@ -386,7 +386,7 @@ export default function Home() {
           ) : (
             <div 
               onClick={() => router.push('/offers')}
-              className="bg-linear-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-shadow"
+              className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center justify-between">
                 <div className="flex-1">
