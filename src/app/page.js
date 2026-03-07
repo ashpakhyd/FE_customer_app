@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { requestFCMToken } from '../config/firebase';
 import BottomNavigation from '../components/BottomNavigation';
+import Image from 'next/image';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
@@ -239,7 +240,13 @@ export default function Home() {
               className="bg-yellow-100 rounded-xl p-4 cursor-pointer hover:bg-yellow-200 transition-colors"
             >
               <div className="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center mb-3">
-                <span className="text-lg">🔧</span>
+                <Image 
+                  src="/icons/newService.png" 
+                  alt="New Service"
+                  width={24}
+                  height={24}
+                  className="object-contain"
+                />
               </div>
               <p className="font-semibold text-black text-sm mb-1">New Service</p>
               <p className="text-xs text-gray-600">Request repair service</p>
@@ -289,7 +296,13 @@ export default function Home() {
               className="bg-white rounded-xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                <span className="text-lg">❄️</span>
+                <Image 
+                  src="/icons/airConditioner.png" 
+                  alt="AC Service"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
               </div>
               <p className="font-medium text-black text-xs text-center">AC Service</p>
             </div>
@@ -298,7 +311,13 @@ export default function Home() {
               className="bg-white rounded-xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                <span className="text-lg">🧺</span>
+                <Image 
+                  src="/icons/washing-machine.png" 
+                  alt="Washing Machine"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
               </div>
               <p className="font-medium text-black text-xs text-center">Washing</p>
             </div>
@@ -307,7 +326,13 @@ export default function Home() {
               className="bg-white rounded-xl p-3 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-2">
-                <span className="text-lg">🧊</span>
+                <Image 
+                  src="/icons/refrigerator.png" 
+                  alt="Refrigerator"
+                  width={32}
+                  height={32}
+                  className="object-contain"
+                />
               </div>
               <p className="font-medium text-black text-xs text-center">Fridge</p>
             </div>
