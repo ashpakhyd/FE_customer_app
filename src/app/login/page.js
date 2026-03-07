@@ -5,6 +5,7 @@ import { useLoginMutation } from '../../store/slices/authApi';
 import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner';
+import { requestFCMToken } from '../../config/firebase';
 
 export default function Login() {
   const { register, handleSubmit, formState: { errors }, setValue } = useForm();
@@ -41,6 +42,20 @@ export default function Login() {
     try {
       const result = await login({ ...data, appType: 'customer' }).unwrap();
       localStorage.setItem('token', result.token);
+      
+      // Send FCM token to backend
+      const fcmToken = await requestFCMToken();
+      if (fcmToken) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/fcm/fcm-token`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${result.token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ fcmToken })
+        });
+      }
+      
       router.push('/');
     } catch (error) {
       setError(error?.data?.message || 'Invalid phone number or password');

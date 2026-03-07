@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import ReduxProvider from "../components/ReduxProvider";
 import LoadingProvider from "../components/LoadingProvider";
+import FCMProvider from "../components/FCMProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,7 +40,9 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <ReduxProvider>
-          <LoadingProvider>{children}</LoadingProvider>
+          <LoadingProvider>
+            <FCMProvider>{children}</FCMProvider>
+          </LoadingProvider>
         </ReduxProvider>
       </body>
     </html>

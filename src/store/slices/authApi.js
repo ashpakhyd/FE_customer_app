@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'https://backend-ticket-assigning-tool.onrender.com/api/auth/',
+    baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/api/auth/`,
     prepareHeaders: (headers, { getState }) => {
       const token = localStorage.getItem('token');
       if (token) {
