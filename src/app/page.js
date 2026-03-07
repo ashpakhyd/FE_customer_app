@@ -2,6 +2,7 @@
 
 import { useGetMyTicketsQuery, useGetNotificationsQuery } from '../store/slices/ticketsApi';
 import { useGetProfileQuery } from '../store/slices/authApi';
+import { useGetOffersQuery } from '../store/slices/offersApi';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
@@ -34,6 +35,9 @@ export default function Home() {
   const { data: profile, error: profileError } = useGetProfileQuery(undefined, {
     skip: !isClient
   });
+  const { data: offersData } = useGetOffersQuery({ type: 'available', limit: 3 }, {
+    skip: !isClient
+  });
 
   if (!isClient) {
     return (
@@ -55,6 +59,7 @@ export default function Home() {
 
   const unreadNotifications = notifications?.filter(n => !n.isRead).length || 0;
   const activeTickets = tickets?.filter(t => t.status !== 'COMPLETED').length || 0;
+  const featuredOffers = offersData?.offers?.slice(0, 2) || [];
 
   if (ticketsLoading) return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
@@ -239,24 +244,63 @@ export default function Home() {
         </div>
 
         {/* Special Offers */}
-        <div className="gradient-card rounded-2xl p-4 text-black" style={{background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fcd34d'}}>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <span className="text-xl">🎁</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-sm">Special Offers</h3>
-                <p className="text-xs opacity-90">Save up to 30% on services</p>
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-black">Special Offers</h3>
+            <button onClick={() => router.push('/offers')} className="text-yellow-600 text-sm font-medium">View All</button>
+          </div>
+          
+          {featuredOffers.length > 0 ? (
+            <div className="space-y-3">
+              {featuredOffers.map((offer) => {
+                const discount = offer.discountPercentage || Math.round(((offer.price.original - offer.price.discounted) / offer.price.original) * 100);
+                return (
+                  <div
+                    key={offer._id}
+                    onClick={() => router.push(`/offers/${offer._id}`)}
+                    className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-4 cursor-pointer hover:shadow-lg transition-shadow"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center space-x-2 mb-2">
+                          <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">{discount}% OFF</span>
+                        </div>
+                        <h3 className="font-bold text-black mb-1">{offer.title}</h3>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-sm line-through text-black opacity-60">PKR {offer.price.original}</span>
+                          <span className="text-lg font-bold text-black">PKR {offer.price.discounted}</span>
+                        </div>
+                      </div>
+                      <div className="text-black text-2xl">→</div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <div 
+              onClick={() => router.push('/offers')}
+              className="bg-gradient-to-r from-yellow-400 to-orange-400 rounded-2xl p-6 cursor-pointer hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <span className="text-2xl">🎁</span>
+                    <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">HOT</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-black mb-1">Exclusive Deals</h3>
+                  <p className="text-sm text-black opacity-90 mb-3">Save up to 50% on services</p>
+                  <div className="inline-flex items-center space-x-2 bg-white bg-opacity-20 rounded-lg px-3 py-2">
+                    <span className="text-xs font-medium text-black">View All Offers</span>
+                    <span className="text-black">→</span>
+                  </div>
+                </div>
+                <div className="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="text-3xl">%</span>
+                </div>
               </div>
             </div>
-            <button 
-              onClick={() => alert('Offers coming soon!')}
-              className="bg-white text-orange-600 px-3 py-2 rounded-lg font-medium text-xs hover:bg-gray-100 transition-colors"
-            >
-              View Deals
-            </button>
-          </div>
+          )}
         </div>
 
         {/* Recent Activity */}
