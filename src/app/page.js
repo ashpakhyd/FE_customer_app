@@ -102,7 +102,7 @@ export default function Home() {
   );
 
   return (
-    <div className="min-h-screen bg-linear-to-b from-yellow-50 to-white pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
       {/* Notification Permission Popup */}
       {showNotificationPrompt && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
