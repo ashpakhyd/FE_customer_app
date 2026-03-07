@@ -3,6 +3,7 @@
 import { useGetOfferByIdQuery, useRedeemOfferMutation } from '../../../store/slices/offersApi';
 import { useRouter } from 'next/navigation';
 import { useState, use } from 'react';
+import ImageGallery from '../../../components/ImageGallery';
 
 export default function OfferDetailsPage({ params }) {
   const router = useRouter();
@@ -79,15 +80,15 @@ export default function OfferDetailsPage({ params }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
       <div className="relative">
-        {offer.images?.[0] ? (
-          <div className="h-64 bg-gradient-to-br from-yellow-100 to-orange-100 relative">
-            <img src={offer.images[0]} alt={offer.title} className="w-full h-full object-cover" />
-            <div className="absolute top-4 left-4">
+        {offer.images && offer.images.length > 0 ? (
+          <div className="relative">
+            <ImageGallery images={offer.images} />
+            <div className="absolute top-4 left-4 z-20">
               <button onClick={() => router.back()} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
                 <span className="text-lg">←</span>
               </button>
             </div>
-            <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold">
+            <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold z-20">
               {discount}% OFF
             </div>
           </div>

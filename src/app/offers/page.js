@@ -3,6 +3,7 @@
 import { useGetOffersQuery } from '../../store/slices/offersApi';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import ImageGallery from '../../components/ImageGallery';
 
 export default function OffersPage() {
   const router = useRouter();
@@ -70,10 +71,10 @@ export default function OffersPage() {
                 onClick={() => router.push(`/offers/${activeTab === 'my-offers' ? offerData._id : offer._id}`)}
                 className="bg-white rounded-2xl shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow"
               >
-                {offerData.images?.[0] && (
-                  <div className="h-40 bg-gradient-to-br from-yellow-100 to-orange-100 relative">
-                    <img src={offerData.images[0]} alt={offerData.title} className="w-full h-full object-cover" />
-                    <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold">
+                {offerData.images && offerData.images.length > 0 && (
+                  <div className="relative">
+                    <ImageGallery images={offerData.images} />
+                    <div className="absolute top-3 right-3 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold z-10">
                       {discount}% OFF
                     </div>
                   </div>
