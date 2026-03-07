@@ -4,6 +4,7 @@ import { useGetOfferByIdQuery, useRedeemOfferMutation } from '../../../store/sli
 import { useRouter } from 'next/navigation';
 import { useState, use } from 'react';
 import ImageGallery from '../../../components/ImageGallery';
+import FullScreenGallery from '../../../components/FullScreenGallery';
 
 export default function OfferDetailsPage({ params }) {
   const router = useRouter();
@@ -12,6 +13,8 @@ export default function OfferDetailsPage({ params }) {
   const [redeemOffer, { isLoading: isRedeeming }] = useRedeemOfferMutation();
   const [showSuccess, setShowSuccess] = useState(false);
   const [redemptionData, setRedemptionData] = useState(null);
+  const [fullScreenOpen, setFullScreenOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   const handleRedeem = async () => {
     try {
@@ -54,11 +57,11 @@ export default function OfferDetailsPage({ params }) {
           <div className="space-y-2 text-sm text-left mb-6">
             <div className="flex justify-between">
               <span className="text-gray-600">Original Price:</span>
-              <span className="line-through">INR {redemptionData.offer.price.original}</span>
+              <span className="line-through">PKR {offer.price.original}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Discounted Price:</span>
-              <span className="font-bold text-yellow-600">{redemptionData.offer.price.currency} {redemptionData.offer.price.discounted}</span>
+              <span className="font-bold text-yellow-600">PKR {offer.price.discounted}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-600">Valid Until:</span>
@@ -78,31 +81,35 @@ export default function OfferDetailsPage({ params }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
+    <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white">
+      {/* Fixed Header */}
+      <div className="fixed top-0 left-0 right-0 z-30 bg-transparent">
+        <div className="flex items-center justify-between p-4 max-w-md mx-auto">
+          <button onClick={() => router.back()} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
+            <span className="text-lg">←</span>
+          </button>
+          <div className="bg-red-500 text-white px-4 py-2 rounded-full font-bold shadow-lg">
+            {discount}% OFF
+          </div>
+        </div>
+      </div>
+
+      {/* Gallery */}
       <div className="relative">
-        {offer.images && offer.images.length > 0 ? (
-          <div className="relative">
-            <ImageGallery images={offer.images} />
-            <div className="absolute top-4 left-4 z-20">
-              <button onClick={() => router.back()} className="w-10 h-10 bg-white rounded-full flex items-center justify-center shadow-lg">
-                <span className="text-lg">←</span>
-              </button>
-            </div>
-            <div className="absolute top-4 right-4 bg-red-500 text-white px-4 py-2 rounded-full font-bold z-20">
-              {discount}% OFF
-            </div>
-          </div>
-        ) : (
-          <div className="bg-white p-4">
-            <button onClick={() => router.back()} className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
-              <span className="text-lg">←</span>
-            </button>
-          </div>
+        {offer.images && offer.images.length > 0 && (
+          <ImageGallery 
+            images={offer.images} 
+            onImageClick={(index) => {
+              setSelectedImageIndex(index);
+              setFullScreenOpen(true);
+            }}
+          />
         )}
       </div>
 
-      <div className="p-4 max-w-md mx-auto">
-        <div className="bg-white rounded-3xl p-6 shadow-lg -mt-8 relative z-10">
+      {/* Details Card with Overlap */}
+      <div className="relative -mt-8 z-20">
+        <div className="bg-white rounded-t-3xl p-6 shadow-xl max-w-md mx-auto min-h-screen">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
               <h1 className="text-2xl font-bold text-black mb-2">{offer.title}</h1>
@@ -118,11 +125,11 @@ export default function OfferDetailsPage({ params }) {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm text-gray-600 mb-1">Original Price</p>
-                <p className="text-lg line-through text-gray-400">{redemptionData.offer.price.currency} {offer.price.original}</p>
+                <p className="text-lg line-through text-gray-400">PKR {offer.price.original}</p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-600 mb-1">Offer Price</p>
-                <p className="text-3xl font-bold text-yellow-600">{redemptionData.offer.price.currency} {offer.price.discounted}</p>
+                <p className="text-3xl font-bold text-yellow-600">PKR {offer.price.discounted}</p>
               </div>
             </div>
           </div>
@@ -182,6 +189,14 @@ export default function OfferDetailsPage({ params }) {
           )}
         </div>
       </div>
+
+      {/* Full Screen Gallery Modal */}
+      <FullScreenGallery 
+        images={offer.images || []} 
+        isOpen={fullScreenOpen} 
+        onClose={() => setFullScreenOpen(false)}
+        initialSlide={selectedImageIndex}
+      />
     </div>
   );
 }

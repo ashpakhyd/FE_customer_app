@@ -7,7 +7,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import '../app/swiper-custom.css';
 
-export default function ImageGallery({ images }) {
+export default function ImageGallery({ images, onImageClick }) {
   if (!images || images.length === 0) return null;
 
   return (
@@ -25,7 +25,8 @@ export default function ImageGallery({ images }) {
             <img 
               src={image} 
               alt={`Image ${index + 1}`}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain cursor-pointer"
+              onClick={() => onImageClick(index)}
             />
           </SwiperSlide>
         ))}
