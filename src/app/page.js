@@ -5,10 +5,12 @@ import { useGetProfileQuery } from '../store/slices/authApi';
 import { useGetOffersQuery } from '../store/slices/offersApi';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { requestFCMToken } from '../config/firebase';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const router = useRouter();
   
   useEffect(() => {
@@ -23,8 +25,34 @@ export default function Home() {
     
     if (!token) {
       router.push('/login');
+      return;
+    }
+
+    // Check notification permission
+    if ('Notification' in window && Notification.permission === 'default') {
+      setTimeout(() => setShowNotificationPrompt(true), 2000);
     }
   }, [router]);
+
+  const handleEnableNotifications = async () => {
+    try {
+      const fcmToken = await requestFCMToken();
+      if (fcmToken) {
+        // Send token to backend
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fcm/fcm-token`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${localStorage.getItem('token')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ fcmToken })
+        });
+        setShowNotificationPrompt(false);
+      }
+    } catch (error) {
+      console.error('Failed to enable notifications:', error);
+    }
+  };
 
   const { data: tickets, isLoading: ticketsLoading, error: ticketsError } = useGetMyTicketsQuery(undefined, {
     skip: !isClient
@@ -69,6 +97,35 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
+      {/* Notification Permission Popup */}
+      {showNotificationPrompt && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
+            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">🔔</span>
+            </div>
+            <h2 className="text-xl font-bold text-black text-center mb-2">Enable Notifications</h2>
+            <p className="text-gray-600 text-center text-sm mb-6">
+              Stay updated with your service requests, technician assignments, and special offers!
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={handleEnableNotifications}
+                className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold hover:bg-yellow-500 transition-colors"
+              >
+                Enable Notifications
+              </button>
+              <button
+                onClick={() => setShowNotificationPrompt(false)}
+                className="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors"
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div className="bg-white p-4 rounded-b-3xl shadow-sm">
         <div className="flex items-center justify-between max-w-md mx-auto">
