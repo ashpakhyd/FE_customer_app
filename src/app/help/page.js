@@ -51,7 +51,7 @@ export default function HelpSupport() {
       desc: "Send us an email",
       icon: "📧",
       bgColor: "bg-green-100",
-      action: () => window.location.href = "mailto:support@example.com"
+      action: () => window.location.href = "mailto:ashpak.shaikh.dev@gmail.com"
     },
     {
       id: 3,
@@ -59,7 +59,7 @@ export default function HelpSupport() {
       desc: "Speak with our team",
       icon: "📞",
       bgColor: "bg-purple-100",
-      action: () => window.location.href = "tel:+1234567890"
+      action: () => window.location.href = "tel:+918623038373"
     },
     {
       id: 4,
@@ -156,7 +156,10 @@ export default function HelpSupport() {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <h2 className="text-lg font-bold text-black mb-4">Quick Links</h2>
           <div className="space-y-3">
-            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50">
+            <button 
+              onClick={() => router.push('/terms-of-service')}
+              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
+            >
               <div className="flex items-center space-x-3">
                 <span className="text-lg">📋</span>
                 <span className="font-medium text-black">Terms of Service</span>
@@ -195,7 +198,7 @@ export default function HelpSupport() {
             </div>
           </div>
           <button 
-            onClick={() => window.location.href = "tel:+1234567890"}
+            onClick={() => window.location.href = "tel:+918623038373"}
             className="w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors"
           >
             Call Emergency Line
