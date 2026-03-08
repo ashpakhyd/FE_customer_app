@@ -163,7 +163,10 @@ export default function HelpSupport() {
               </div>
               <span className="text-gray-400">→</span>
             </button>
-            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50">
+            <button 
+              onClick={() => router.push('/privacy-policy')}
+              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
+            >
               <div className="flex items-center space-x-3">
                 <span className="text-lg">🔒</span>
                 <span className="font-medium text-black">Privacy Policy</span>
