@@ -138,16 +138,24 @@ export default function HelpSupport() {
           <h2 className="text-lg font-bold text-black mb-4">App Information</h2>
           <div className="space-y-3">
             <div className="flex justify-between items-center py-2">
-              <span className="text-gray-600">Version</span>
-              <span className="font-medium text-black">1.0.0</span>
+              <span className="text-gray-600 text-sm">App Name</span>
+              <span className="font-medium text-black text-sm">SD - Service Door</span>
             </div>
             <div className="flex justify-between items-center py-2">
-              <span className="text-gray-600">Last Updated</span>
-              <span className="font-medium text-black">Dec 2024</span>
+              <span className="text-gray-600 text-sm">Version</span>
+              <span className="font-medium text-black text-sm">1.0</span>
             </div>
             <div className="flex justify-between items-center py-2">
-              <span className="text-gray-600">Support Hours</span>
-              <span className="font-medium text-black">24/7</span>
+              <span className="text-gray-600 text-sm">Developer</span>
+              <span className="font-semibold text-yellow-600 text-sm">Ashfaq Ahemad Shaikh</span>
+            </div>
+            <div className="flex justify-between items-center py-2">
+              <span className="text-gray-600 text-sm">Email</span>
+              <span className="font-medium text-gray-700 text-xs">ashpak.shaikh.dev@gmail.com</span>
+            </div>
+            <div className="flex justify-between items-center py-2">
+              <span className="text-gray-600 text-sm">Support</span>
+              <span className="font-medium text-black text-sm">24/7</span>
             </div>
           </div>
         </div>

@@ -96,7 +96,7 @@ export default function WashingMachineService() {
               </div>
             </div>
             <button 
-              onClick={() => window.location.href = 'tel:+919172605997'}
+              onClick={() => window.location.href = 'tel:+918623038373'}
               className="bg-red-500 text-white px-3 py-2 rounded-lg font-medium text-sm hover:bg-red-600 transition-colors"
             >
               Call Now

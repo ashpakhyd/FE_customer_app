@@ -37,29 +37,18 @@ export default function Settings() {
           <h2 className="text-lg font-bold text-black mb-4">Account</h2>
           <div className="space-y-3">
             <button 
-              onClick={() => router.push('/profile/edit')}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
+              onClick={() => alert('Coming soon!')}
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-gray-50 opacity-60 cursor-not-allowed"
             >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                   <span className="text-lg">👤</span>
                 </div>
-                <span className="font-medium text-black">Edit Profile</span>
-              </div>
-              <span className="text-gray-400">→</span>
-            </button>
-            
-            <button 
-              onClick={() => router.push('/change-password')}
-              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                  <span className="text-lg">🔒</span>
+                <div className="text-left">
+                  <span className="font-medium text-black">Edit Profile</span>
+                  <p className="text-xs text-gray-500">Coming soon</p>
                 </div>
-                <span className="font-medium text-black">Change Password</span>
               </div>
-              <span className="text-gray-400">→</span>
             </button>
           </div>
         </div>
@@ -118,46 +107,39 @@ export default function Settings() {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <h2 className="text-lg font-bold text-black mb-4">Preferences</h2>
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between opacity-60">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                   <span className="text-lg">🌙</span>
                 </div>
                 <div>
                   <span className="font-medium text-black">Dark Mode</span>
-                  <p className="text-xs text-gray-600">Switch to dark theme</p>
+                  <p className="text-xs text-gray-500">Coming soon</p>
                 </div>
               </div>
               <button
-                onClick={() => toggleSwitch(setDarkMode, darkMode)}
-                className={`w-12 h-6 rounded-full transition-colors ${
-                  darkMode ? 'bg-yellow-400' : 'bg-gray-300'
-                }`}
+                disabled
+                className="w-12 h-6 rounded-full bg-gray-300 cursor-not-allowed"
               >
-                <div className={`w-5 h-5 bg-white rounded-full transition-transform ${
-                  darkMode ? 'translate-x-6' : 'translate-x-0.5'
-                } mt-0.5`}></div>
+                <div className="w-5 h-5 bg-white rounded-full translate-x-0.5 mt-0.5"></div>
               </button>
             </div>
 
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between opacity-60">
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
                   <span className="text-lg">🌐</span>
                 </div>
                 <div>
                   <span className="font-medium text-black">Language</span>
-                  <p className="text-xs text-gray-600">Choose your language</p>
+                  <p className="text-xs text-gray-500">Coming soon</p>
                 </div>
               </div>
               <select 
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="bg-gray-100 rounded-lg px-3 py-2 text-sm font-medium text-black"
+                disabled
+                className="bg-gray-100 rounded-lg px-3 py-2 text-sm font-medium text-gray-400 cursor-not-allowed"
               >
                 <option>English</option>
-                <option>Hindi</option>
-                <option>Spanish</option>
               </select>
             </div>
           </div>
@@ -167,7 +149,10 @@ export default function Settings() {
         <div className="bg-white rounded-2xl p-4 shadow-sm">
           <h2 className="text-lg font-bold text-black mb-4">Privacy & Security</h2>
           <div className="space-y-3">
-            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50">
+            <button 
+              onClick={() => router.push('/privacy-policy')}
+              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
                   <span className="text-lg">🛡️</span>
@@ -177,7 +162,10 @@ export default function Settings() {
               <span className="text-gray-400">→</span>
             </button>
             
-            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50">
+            <button 
+              onClick={() => router.push('/terms-of-service')}
+              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
+            >
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-pink-100 rounded-full flex items-center justify-center">
                   <span className="text-lg">📋</span>
@@ -195,13 +183,12 @@ export default function Settings() {
           <div className="space-y-3">
             <div className="flex justify-between items-center py-2">
               <span className="text-gray-600">App Version</span>
-              <span className="font-medium text-black">1.0.0</span>
+              <span className="font-medium text-black">1.0</span>
             </div>
-            <div className="flex justify-between items-center py-2">
-              <span className="text-gray-600">Build Number</span>
-              <span className="font-medium text-black">100</span>
-            </div>
-            <button className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50">
+            <button 
+              onClick={() => alert('You are using the latest version!')}
+              className="w-full flex items-center justify-between p-3 rounded-xl hover:bg-gray-50"
+            >
               <span className="font-medium text-black">Check for Updates</span>
               <span className="text-gray-400">→</span>
             </button>
@@ -212,10 +199,17 @@ export default function Settings() {
         <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-2xl p-4 border border-red-200">
           <h2 className="text-lg font-bold text-red-800 mb-4">Danger Zone</h2>
           <div className="space-y-3">
-            <button className="w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors">
-              Clear All Data
+            <button 
+              onClick={() => alert('Coming soon!')}
+              className="w-full bg-red-400 text-white py-3 rounded-xl font-semibold opacity-60 cursor-not-allowed"
+              disabled
+            >
+              Clear All Data (Coming soon)
             </button>
-            <button className="w-full bg-red-600 text-white py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors">
+            <button 
+              onClick={() => router.push('/delete-account')}
+              className="w-full bg-red-600 text-white py-3 rounded-xl font-semibold hover:bg-red-700 transition-colors"
+            >
               Delete Account
             </button>
           </div>

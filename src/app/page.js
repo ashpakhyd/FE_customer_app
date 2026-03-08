@@ -240,7 +240,7 @@ export default function Home() {
               </div>
             </div>
             <button 
-              onClick={() => window.location.href = 'tel:+919172605997'}
+              onClick={() => window.location.href = 'tel:+918623038373'}
               className="bg-white text-red-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
             >
               Call Now
