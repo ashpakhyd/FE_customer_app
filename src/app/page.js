@@ -83,7 +83,7 @@ export default function Home() {
     }
 
     if ('Notification' in window && Notification.permission === 'default') {
-      setTimeout(() => setShowNotificationPrompt(true), 2000);
+      setShowNotificationPrompt(true);
     }
   }, [router]);
 
@@ -97,44 +97,6 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white pb-20">
-      {/* Notification Permission Popup */}
-      {showNotificationPrompt && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl animate-scale-in">
-            <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-3xl">🔔</span>
-            </div>
-            <h2 className="text-xl font-bold text-black text-center mb-2">Enable Notifications</h2>
-            <p className="text-gray-600 text-center text-sm mb-6">
-              Stay updated with your service requests, technician assignments, and special offers!
-            </p>
-            <div className="space-y-3">
-              <button
-                onClick={handleEnableNotifications}
-                disabled={isEnablingNotification}
-                className="w-full bg-yellow-400 text-black py-3 rounded-xl font-bold hover:bg-yellow-500 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center"
-              >
-                {isEnablingNotification ? (
-                  <>
-                    <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin mr-2"></div>
-                    Enabling...
-                  </>
-                ) : (
-                  'Enable Notifications'
-                )}
-              </button>
-              <button
-                onClick={() => setShowNotificationPrompt(false)}
-                disabled={isEnablingNotification}
-                className="w-full bg-gray-100 text-gray-600 py-3 rounded-xl font-medium hover:bg-gray-200 transition-colors disabled:opacity-60"
-              >
-                Maybe Later
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Header */}
       <div className="bg-white p-4 rounded-b-3xl shadow-sm">
         <div className="flex items-center justify-between max-w-md mx-auto">
@@ -187,6 +149,34 @@ export default function Home() {
 
       {/* Main Content */}
       <div className="p-4 max-w-md mx-auto space-y-6">
+        {/* Notification Permission Card */}
+        {showNotificationPrompt && (
+          <div className="gradient-card-orange rounded-2xl p-4 text-white mb-6" style={{background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fb923c'}}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <span className="text-xl">🔔</span>
+                </div>
+                <div>
+                  <h3 className="font-bold text-sm">Enable Notifications</h3>
+                  <p className="text-xs opacity-90">Stay updated with your services</p>
+                </div>
+              </div>
+              <button 
+                onClick={handleEnableNotifications}
+                disabled={isEnablingNotification}
+                className="bg-white text-orange-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center"
+              >
+                {isEnablingNotification ? (
+                  <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  'Enable'
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Service Status Card */}
         <div className="gradient-card rounded-2xl p-6 text-black" style={{background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fcd34d'}}>
           <h3 className="text-lg font-bold mb-2">Your Service Status</h3>
