@@ -82,7 +82,7 @@ export default function Home() {
       return;
     }
 
-    if ('Notification' in window && Notification.permission === 'default') {
+    if ('Notification' in window && Notification.permission === 'denied') {
       setShowNotificationPrompt(true);
     }
   }, [router]);
