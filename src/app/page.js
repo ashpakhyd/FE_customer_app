@@ -4,7 +4,7 @@ import { useGetMyTicketsQuery, useGetNotificationsQuery } from '../store/slices/
 import { useGetProfileQuery } from '../store/slices/authApi';
 import { useGetOffersQuery } from '../store/slices/offersApi';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState, useMemo, useCallback } from 'react';
+import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import { requestFCMToken } from '../config/firebase';
 import BottomNavigation from '../components/BottomNavigation';
 import Image from 'next/image';
@@ -15,8 +15,51 @@ export default function Home() {
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const [isEnablingNotification, setIsEnablingNotification] = useState(false);
   const router = useRouter();
+
+  // Elastic drag effect
+  const useDragElastic = () => {
+    const [dragStyle, setDragStyle] = useState({});
+    const startPos = useRef({ x: 0, y: 0 });
+    const isDragging = useRef(false);
+
+    const handleStart = (e) => {
+      isDragging.current = true;
+      const touch = e.touches ? e.touches[0] : e;
+      startPos.current = { x: touch.clientX, y: touch.clientY };
+    };
+
+    const handleMove = (e) => {
+      if (!isDragging.current) return;
+      const touch = e.touches ? e.touches[0] : e;
+      const deltaX = (touch.clientX - startPos.current.x) * 0.3;
+      const deltaY = (touch.clientY - startPos.current.y) * 0.3;
+      setDragStyle({
+        transform: `translate(${deltaX}px, ${deltaY}px) scale(0.98)`,
+        transition: 'none'
+      });
+    };
+
+    const handleEnd = () => {
+      isDragging.current = false;
+      setDragStyle({
+        transform: 'translate(0, 0) scale(1)',
+        transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+      });
+    };
+
+    return { dragStyle, handleStart, handleMove, handleEnd };
+  };
   
   // Always call hooks first
+  const notificationCard = useDragElastic();
+  const serviceCard = useDragElastic();
+  const repairCard = useDragElastic();
+  const emergencyCard = useDragElastic();
+  const quickAction1 = useDragElastic();
+  const quickAction2 = useDragElastic();
+  const quickAction3 = useDragElastic();
+  const quickAction4 = useDragElastic();
+
   const { data: tickets, isLoading: ticketsLoading, error: ticketsError } = useGetMyTicketsQuery(undefined, {
     skip: !isClient
   });
@@ -151,7 +194,17 @@ export default function Home() {
       <div className="p-4 max-w-md mx-auto space-y-6">
         {/* Notification Permission Card */}
         {showNotificationPrompt && (
-          <div className="gradient-card-orange rounded-2xl p-4 text-white mb-6" style={{background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fb923c'}}>
+          <div 
+            className="gradient-card-orange rounded-2xl p-4 text-white mb-6" 
+            style={{background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fb923c', ...notificationCard.dragStyle}}
+            onMouseDown={notificationCard.handleStart}
+            onMouseMove={notificationCard.handleMove}
+            onMouseUp={notificationCard.handleEnd}
+            onMouseLeave={notificationCard.handleEnd}
+            onTouchStart={notificationCard.handleStart}
+            onTouchMove={notificationCard.handleMove}
+            onTouchEnd={notificationCard.handleEnd}
+          >
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -178,7 +231,17 @@ export default function Home() {
         )}
 
         {/* Service Status Card */}
-        <div className="gradient-card rounded-2xl p-6 text-black" style={{background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fcd34d'}}>
+        <div 
+          className="gradient-card rounded-2xl p-6 text-black" 
+          style={{background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #fcd34d', ...serviceCard.dragStyle}}
+          onMouseDown={serviceCard.handleStart}
+          onMouseMove={serviceCard.handleMove}
+          onMouseUp={serviceCard.handleEnd}
+          onMouseLeave={serviceCard.handleEnd}
+          onTouchStart={serviceCard.handleStart}
+          onTouchMove={serviceCard.handleMove}
+          onTouchEnd={serviceCard.handleEnd}
+        >
           <h3 className="text-lg font-bold mb-2">Your Service Status</h3>
           <p className="text-sm mb-4 opacity-90">
             {activeTickets > 0 ? `You have ${activeTickets} active service requests` : 'All services completed'}
@@ -197,7 +260,17 @@ export default function Home() {
         </div>
 
         {/* Repair Shop Card */}
-        <div className="gradient-card-blue rounded-2xl p-4 text-white mb-6" style={{background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #60a5fa'}}>
+        <div 
+          className="gradient-card-blue rounded-2xl p-4 text-white mb-6" 
+          style={{background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #60a5fa', ...repairCard.dragStyle}}
+          onMouseDown={repairCard.handleStart}
+          onMouseMove={repairCard.handleMove}
+          onMouseUp={repairCard.handleEnd}
+          onMouseLeave={repairCard.handleEnd}
+          onTouchStart={repairCard.handleStart}
+          onTouchMove={repairCard.handleMove}
+          onTouchEnd={repairCard.handleEnd}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -218,7 +291,17 @@ export default function Home() {
         </div>
 
         {/* Emergency Banner */}
-        <div className="gradient-card-red rounded-2xl p-4 text-white mb-6" style={{background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #f87171'}}>
+        <div 
+          className="gradient-card-red rounded-2xl p-4 text-white mb-6" 
+          style={{background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #f87171', ...emergencyCard.dragStyle}}
+          onMouseDown={emergencyCard.handleStart}
+          onMouseMove={emergencyCard.handleMove}
+          onMouseUp={emergencyCard.handleEnd}
+          onMouseLeave={emergencyCard.handleEnd}
+          onTouchStart={emergencyCard.handleStart}
+          onTouchMove={emergencyCard.handleMove}
+          onTouchEnd={emergencyCard.handleEnd}
+        >
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
@@ -248,6 +331,14 @@ export default function Home() {
             <div 
               onClick={() => router.push('/services')}
               className="bg-yellow-100 rounded-xl p-4 cursor-pointer hover:bg-yellow-200 transition-colors"
+              style={quickAction1.dragStyle}
+              onMouseDown={quickAction1.handleStart}
+              onMouseMove={quickAction1.handleMove}
+              onMouseUp={quickAction1.handleEnd}
+              onMouseLeave={quickAction1.handleEnd}
+              onTouchStart={quickAction1.handleStart}
+              onTouchMove={quickAction1.handleMove}
+              onTouchEnd={quickAction1.handleEnd}
             >
               <div className="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center mb-3">
                 <Image 
@@ -264,6 +355,14 @@ export default function Home() {
             <div 
               onClick={() => router.push('/tickets')}
               className="bg-blue-100 rounded-xl p-4 cursor-pointer hover:bg-blue-200 transition-colors"
+              style={quickAction2.dragStyle}
+              onMouseDown={quickAction2.handleStart}
+              onMouseMove={quickAction2.handleMove}
+              onMouseUp={quickAction2.handleEnd}
+              onMouseLeave={quickAction2.handleEnd}
+              onTouchStart={quickAction2.handleStart}
+              onTouchMove={quickAction2.handleMove}
+              onTouchEnd={quickAction2.handleEnd}
             >
               <div className="w-10 h-10 bg-blue-400 rounded-xl flex items-center justify-center mb-3">
                 <span className="text-lg">📋</span>
@@ -274,6 +373,14 @@ export default function Home() {
             <div 
               onClick={() => router.push('/help')}
               className="bg-green-100 rounded-xl p-4 cursor-pointer hover:bg-green-200 transition-colors"
+              style={quickAction3.dragStyle}
+              onMouseDown={quickAction3.handleStart}
+              onMouseMove={quickAction3.handleMove}
+              onMouseUp={quickAction3.handleEnd}
+              onMouseLeave={quickAction3.handleEnd}
+              onTouchStart={quickAction3.handleStart}
+              onTouchMove={quickAction3.handleMove}
+              onTouchEnd={quickAction3.handleEnd}
             >
               <div className="w-10 h-10 bg-green-400 rounded-xl flex items-center justify-center mb-3">
                 <span className="text-lg">💬</span>
@@ -284,6 +391,14 @@ export default function Home() {
             <div 
               onClick={() => router.push('/book-appointment')}
               className="bg-purple-100 rounded-xl p-4 cursor-pointer hover:bg-purple-200 transition-colors"
+              style={quickAction4.dragStyle}
+              onMouseDown={quickAction4.handleStart}
+              onMouseMove={quickAction4.handleMove}
+              onMouseUp={quickAction4.handleEnd}
+              onMouseLeave={quickAction4.handleEnd}
+              onTouchStart={quickAction4.handleStart}
+              onTouchMove={quickAction4.handleMove}
+              onTouchEnd={quickAction4.handleEnd}
             >
               <div className="w-10 h-10 bg-purple-400 rounded-xl flex items-center justify-center mb-3">
                 <span className="text-lg">📅</span>
