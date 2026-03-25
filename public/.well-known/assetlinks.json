@@ -3,6 +3,9 @@
   "target": {
     "namespace": "android_app",
     "package_name": "com.custticket.app",
-    "sha256_cert_fingerprints": ["F4:AC:0C:3D:A7:AB:15:51:8C:D5:6B:A8:F8:D9:CE:D2:95:D1:D5:B5:5C:3B:C7:63:00:08:CA:C0:8E:8D:EA:E8"]
+    "sha256_cert_fingerprints": [
+      "F4:AC:0C:3D:A7:AB:15:51:8C:D5:6B:A8:F8:D9:CE:D2:95:D1:D5:B5:5C:3B:C7:63:00:08:CA:C0:8E:8D:EA:E8",
+      "79:61:0F:78:24:37:ED:FA:12:D5:6F:BF:6A:32:77:A5:AE:51:2A:5B:16:53:26:D4:22:AC:2E:57:8C:64:3B:C2"
+    ]
   }
 }]
