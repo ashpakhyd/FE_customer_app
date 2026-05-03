@@ -10,47 +10,46 @@ import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
 import BottomNavigation from '../components/BottomNavigation';
 import Image from 'next/image';
 
+// Moved outside component to follow React hooks rules
+function useDragElastic() {
+  const [dragStyle, setDragStyle] = useState({});
+  const startPos = useRef({ x: 0, y: 0 });
+  const isDragging = useRef(false);
+
+  const handleStart = (e) => {
+    isDragging.current = true;
+    const touch = e.touches ? e.touches[0] : e;
+    startPos.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleMove = (e) => {
+    if (!isDragging.current) return;
+    const touch = e.touches ? e.touches[0] : e;
+    const deltaX = (touch.clientX - startPos.current.x) * 0.3;
+    const deltaY = (touch.clientY - startPos.current.y) * 0.3;
+    setDragStyle({
+      transform: `translate(${deltaX}px, ${deltaY}px) scale(0.98)`,
+      transition: 'none'
+    });
+  };
+
+  const handleEnd = () => {
+    isDragging.current = false;
+    setDragStyle({
+      transform: 'translate(0, 0) scale(1)',
+      transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+    });
+  };
+
+  return { dragStyle, handleStart, handleMove, handleEnd };
+}
+
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
   const [showAddressDropdown, setShowAddressDropdown] = useState(false);
   const router = useRouter();
 
-  // Elastic drag effect
-  const useDragElastic = () => {
-    const [dragStyle, setDragStyle] = useState({});
-    const startPos = useRef({ x: 0, y: 0 });
-    const isDragging = useRef(false);
-
-    const handleStart = (e) => {
-      isDragging.current = true;
-      const touch = e.touches ? e.touches[0] : e;
-      startPos.current = { x: touch.clientX, y: touch.clientY };
-    };
-
-    const handleMove = (e) => {
-      if (!isDragging.current) return;
-      const touch = e.touches ? e.touches[0] : e;
-      const deltaX = (touch.clientX - startPos.current.x) * 0.3;
-      const deltaY = (touch.clientY - startPos.current.y) * 0.3;
-      setDragStyle({
-        transform: `translate(${deltaX}px, ${deltaY}px) scale(0.98)`,
-        transition: 'none'
-      });
-    };
-
-    const handleEnd = () => {
-      isDragging.current = false;
-      setDragStyle({
-        transform: 'translate(0, 0) scale(1)',
-        transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
-      });
-    };
-
-    return { dragStyle, handleStart, handleMove, handleEnd };
-  };
-  
-  // Always call hooks first
   const notificationCard = useDragElastic();
   const serviceCard = useDragElastic();
   const repairCard = useDragElastic();
@@ -246,14 +245,9 @@ export default function Home() {
               </div>
               <button 
                 onClick={handleEnableNotifications}
-                disabled={isEnablingNotification}
-                className="bg-white text-orange-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center"
+                className="bg-white text-orange-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors flex items-center"
               >
-                {isEnablingNotification ? (
-                  <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin"></div>
-                ) : (
-                  'Enable'
-                )}
+                Enable
               </button>
             </div>
           </div>
