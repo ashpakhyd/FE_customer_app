@@ -3,10 +3,13 @@
 import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '../../../../components/BottomNavigation';
+import { useAddressCheck } from '../../../../hooks/useAddressCheck';
+import NoAddressModal from '../../../../components/NoAddressModal';
 
 export default function ServiceSubcategories({ params }) {
   const router = useRouter();
   const resolvedParams = use(params);
+  const { navigateToTicket, showModal, setShowModal } = useAddressCheck();
 
   const subcategoryData = {
     electrician: {
@@ -714,7 +717,7 @@ export default function ServiceSubcategories({ params }) {
           {subcategories.map((subcategory) => (
             <div
               key={subcategory.id}
-              onClick={() => router.push(`/create-ticket?service=${resolvedParams.serviceId}&category=${resolvedParams.categoryId}&subcategory=${subcategory.id}&serviceName=${encodeURIComponent(serviceName)}&categoryName=${encodeURIComponent(categoryName)}&subcategoryName=${encodeURIComponent(subcategory.name)}`)}
+              onClick={() => navigateToTicket(`/create-ticket?service=${resolvedParams.serviceId}&category=${resolvedParams.categoryId}&subcategory=${subcategory.id}&serviceName=${encodeURIComponent(serviceName)}&categoryName=${encodeURIComponent(categoryName)}&subcategoryName=${encodeURIComponent(subcategory.name)}`)}
               className="bg-white rounded-2xl p-4 shadow-sm cursor-pointer hover:shadow-md transition-shadow"
             >
               <div className="flex items-center justify-between">
@@ -734,6 +737,7 @@ export default function ServiceSubcategories({ params }) {
       </div>
 
       <BottomNavigation />
+      {showModal && <NoAddressModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }

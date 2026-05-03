@@ -4,10 +4,13 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import BottomNavigation from '../../../components/BottomNavigation';
 import Image from 'next/image';
+import { useAddressCheck } from '../../../hooks/useAddressCheck';
+import NoAddressModal from '../../../components/NoAddressModal';
 
 export default function ACService() {
   const router = useRouter();
   const [selectedService, setSelectedService] = useState('');
+  const { navigateToTicket, showModal, setShowModal } = useAddressCheck();
 
   const acServices = [
     {
@@ -45,7 +48,7 @@ export default function ACService() {
   ];
 
   const handleBookService = (service) => {
-    router.push(`/create-ticket?serviceName=AC Service&categoryName=Air Conditioner&subcategoryName=${service.name}`);
+    navigateToTicket(`/create-ticket?serviceName=AC Service&categoryName=Air Conditioner&subcategoryName=${service.name}`);
   };
 
   const handleBookAppointment = (service) => {
@@ -180,6 +183,7 @@ export default function ACService() {
       </div>
 
       <BottomNavigation />
+      {showModal && <NoAddressModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }

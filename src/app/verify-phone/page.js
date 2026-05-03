@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, Suspense } from 'react';
-import { useRegisterMutation } from '../../store/slices/authApi';
 import LoadingSpinner from '../../components/LoadingSpinner';
 
 function VerifyPhoneContent() {
@@ -10,29 +9,27 @@ function VerifyPhoneContent() {
   const searchParams = useSearchParams();
   const [phone, setPhone] = useState(searchParams.get('phone') || '');
   const [isEditing, setIsEditing] = useState(false);
-  const [registerUser, { isLoading }] = useRegisterMutation();
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-
-  const handleEdit = () => {
-    setIsEditing(true);
-  };
 
   const handleConfirm = async () => {
     setError('');
-    const registerData = JSON.parse(sessionStorage.getItem('registerData') || '{}');
-    registerData.phone = phone;
-    
+    setIsLoading(true);
     try {
-      await registerUser(registerData).unwrap();
-      // Store phone and password for login page
-      sessionStorage.setItem('loginData', JSON.stringify({
-        phone: registerData.phone,
-        password: registerData.password
-      }));
+      const registerData = JSON.parse(sessionStorage.getItem('registerData') || '{}');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registerData),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
       sessionStorage.removeItem('registerData');
       router.push('/login');
     } catch (err) {
-      setError(err?.data?.message || 'Registration failed. Please try again.');
+      setError(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -44,7 +41,7 @@ function VerifyPhoneContent() {
             <span className="text-4xl">📱</span>
           </div>
           <h1 className="text-2xl font-bold text-black mb-2">Confirm Phone Number</h1>
-          <p className="text-gray-600">Please verify your phone number</p>
+          <p className="text-gray-600">Please confirm your phone number to continue</p>
         </div>
 
         <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -71,27 +68,14 @@ function VerifyPhoneContent() {
 
         <div className="space-y-3">
           {isEditing ? (
-            <button
-              onClick={() => setIsEditing(false)}
-              className="btn-primary w-full"
-            >
-              Save
-            </button>
+            <button onClick={() => setIsEditing(false)} className="btn-primary w-full">Save</button>
           ) : (
             <>
-              <button
-                onClick={handleConfirm}
-                disabled={isLoading}
-                className="btn-primary w-full"
-              >
-                {isLoading ? 'Registering...' : 'Confirm'}
+              <button onClick={handleConfirm} disabled={isLoading} className="btn-primary w-full">
+                {isLoading ? 'Confirming...' : 'Confirm'}
               </button>
-              
-              <button
-                onClick={handleEdit}
-                disabled={isLoading}
-                className="w-full py-3 px-4 border-2 border-yellow-400 text-yellow-600 rounded-lg font-semibold hover:bg-yellow-50 transition-colors disabled:opacity-50"
-              >
+              <button onClick={() => setIsEditing(true)} disabled={isLoading}
+                className="w-full py-3 px-4 border-2 border-yellow-400 text-yellow-600 rounded-lg font-semibold hover:bg-yellow-50 transition-colors disabled:opacity-50">
                 Edit Phone Number
               </button>
             </>

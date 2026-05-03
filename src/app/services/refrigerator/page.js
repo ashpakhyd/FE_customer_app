@@ -3,9 +3,12 @@
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '../../../components/BottomNavigation';
 import Image from 'next/image';
+import { useAddressCheck } from '../../../hooks/useAddressCheck';
+import NoAddressModal from '../../../components/NoAddressModal';
 
 export default function RefrigeratorService() {
   const router = useRouter();
+  const { navigateToTicket, showModal, setShowModal } = useAddressCheck();
 
   const fridgeServices = [
     {
@@ -35,7 +38,7 @@ export default function RefrigeratorService() {
   ];
 
   const handleBookService = (service) => {
-    router.push(`/create-ticket?serviceName=Refrigerator Service&categoryName=Refrigerator&subcategoryName=${service.name}`);
+    navigateToTicket(`/create-ticket?serviceName=Refrigerator Service&categoryName=Refrigerator&subcategoryName=${service.name}`);
   };
 
   const handleBookAppointment = (service) => {
@@ -170,6 +173,7 @@ export default function RefrigeratorService() {
       </div>
 
       <BottomNavigation />
+      {showModal && <NoAddressModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }

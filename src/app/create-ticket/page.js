@@ -5,34 +5,32 @@ import { useCreateTicketMutation } from '../../store/slices/ticketsApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect, Suspense } from 'react';
 import BottomNavigation from '../../components/BottomNavigation';
+import { useGetAddressesQuery } from '../../store/slices/addressesApi';
 
 function CreateTicketForm() {
   const searchParams = useSearchParams();
   const serviceName = searchParams.get('serviceName');
   const categoryName = searchParams.get('categoryName');
   const subcategoryName = searchParams.get('subcategoryName');
-  
+
   const { register, handleSubmit, reset, setValue, formState: { errors } } = useForm({
-    defaultValues: {
-      priority: 'MEDIUM',
-      serviceType: 'REPAIR',
-      urgency: 'normal',
-      timeSlot: 'morning'
-    }
+    defaultValues: { priority: 'MEDIUM', timeSlot: 'morning' }
   });
-  
+
   useEffect(() => {
     if (serviceName && categoryName && subcategoryName) {
       setValue('title', `${categoryName} - ${subcategoryName}`);
-      setValue('serviceCategory', serviceName);
       setValue('appliance', categoryName);
       setValue('issue', subcategoryName);
+      setValue('serviceCategory', serviceName);
     }
   }, [serviceName, categoryName, subcategoryName, setValue]);
+
   const [createTicket, { isLoading }] = useCreateTicketMutation();
+  const { data: addresses = [] } = useGetAddressesQuery();
+  const selectedAddress = addresses.find(a => a.isSelected) || addresses.find(a => a.isDefault) || addresses[0];
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [loadingLocation, setLoadingLocation] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [uploadingFiles, setUploadingFiles] = useState(false);
   const [uploadController, setUploadController] = useState(null);
@@ -41,145 +39,53 @@ function CreateTicketForm() {
   const uploadToCloudinary = async (file, controller) => {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'ticket_uploads'); // Create this preset in Cloudinary
-    
-    const response = await fetch(
-      `https://api.cloudinary.com/v1_1/dsrmkwxbm/image/upload`,
-      { 
-        method: 'POST', 
-        body: formData,
-        signal: controller.signal
-      }
-    );
-    
+    formData.append('upload_preset', 'ticket_uploads');
+    const response = await fetch(`https://api.cloudinary.com/v1_1/dsrmkwxbm/image/upload`, {
+      method: 'POST', body: formData, signal: controller.signal
+    });
     return response.json();
   };
 
   const handleFileSelect = async (e) => {
     const files = Array.from(e.target.files);
     if (files.length === 0) return;
-    
     const controller = new AbortController();
     setUploadController(controller);
     setUploadingFiles(true);
     const uploadedFiles = [];
-    
     try {
       for (const file of files) {
         const result = await uploadToCloudinary(file, controller);
-        uploadedFiles.push({
-          name: file.name,
-          url: result.secure_url,
-          type: file.type
-        });
+        uploadedFiles.push({ name: file.name, url: result.secure_url, type: file.type });
       }
-      setSelectedFiles([...selectedFiles, ...uploadedFiles]);
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        setError('Upload cancelled');
-      } else {
-        setError('Failed to upload files. Please try again.');
-      }
+      setSelectedFiles(prev => [...prev, ...uploadedFiles]);
+    } catch (err) {
+      setError(err.name === 'AbortError' ? 'Upload cancelled' : 'Failed to upload files.');
     } finally {
       setUploadingFiles(false);
       setUploadController(null);
     }
   };
 
-  const cancelUpload = () => {
-    if (uploadController) {
-      uploadController.abort();
-      setUploadingFiles(false);
-      setUploadController(null);
-    }
-  };
-
-  const removeFile = (index) => {
-    setSelectedFiles(selectedFiles.filter((_, i) => i !== index));
-  };
-
-  const getCurrentLocation = () => {
-    setLoadingLocation(true);
-    
-    if (!navigator.geolocation) {
-      setError('Geolocation is not supported by this browser');
-      setLoadingLocation(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        try {
-          const { latitude, longitude } = position.coords;
-          
-          const response = await fetch(
-            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1`
-          );
-          const data = await response.json();
-          
-          // Extract detailed address components
-          const address = data.address;
-          const detailedAddress = [
-            address.house_number || '',
-            address.road || address.street || '',
-            address.neighbourhood || address.suburb || '',
-            address.village || address.town || address.city || '',
-            address.state_district || '',
-            address.state || '',
-            address.postcode || '',
-            address.country || ''
-          ].filter(Boolean).join(', ');
-          
-          // Store coordinates for admin panel
-          const fullLocationData = {
-            address: detailedAddress,
-            latitude: latitude,
-            longitude: longitude,
-            city: address.city || address.town || address.village,
-            state: address.state,
-            pincode: address.postcode,
-            country: address.country
-          };
-          
-          setValue('address', detailedAddress);
-          setValue('latitude', latitude);
-          setValue('longitude', longitude);
-          setLoadingLocation(false);
-        } catch (error) {
-          setError('Failed to get address from location');
-          setLoadingLocation(false);
-        }
-      },
-      (error) => {
-        setError('Unable to get your location. Please enter address manually.');
-        setLoadingLocation(false);
-      },
-      { timeout: 10000 }
-    );
-  };
-
   const onSubmit = async (data) => {
     setError('');
-    
-    // Combine house details with address if provided
-    const finalAddress = data.houseDetails 
-      ? `${data.houseDetails}, ${data.address}`
-      : data.address;
-    
-    const ticketData = {
-      ...data,
-      address: finalAddress,
-      attachments: selectedFiles
-    };
-    
     try {
-      await createTicket(ticketData).unwrap();
+      const addressStr = selectedAddress
+        ? `${selectedAddress.house}, ${selectedAddress.area || selectedAddress.colony}, ${selectedAddress.city} - ${selectedAddress.pincode}`
+        : '';
+      await createTicket({
+        ...data,
+        address: addressStr,
+        ...(selectedAddress?.latitude && selectedAddress?.longitude && {
+          latitude: selectedAddress.latitude,
+          longitude: selectedAddress.longitude,
+        }),
+        attachments: selectedFiles,
+      }).unwrap();
       setSuccess(true);
       reset();
-      setTimeout(() => {
-        router.push('/tickets');
-      }, 3000);
-    } catch (error) {
+      setTimeout(() => router.push('/tickets'), 3000);
+    } catch {
       setError('Failed to create ticket. Please try again.');
     }
   };
@@ -192,22 +98,13 @@ function CreateTicketForm() {
             <span className="text-2xl">✓</span>
           </div>
           <h1 className="text-2xl font-bold text-black mb-2">Ticket Created!</h1>
-          <p className="text-gray-600 mb-4">
-            Your service request has been submitted successfully.
-          </p>
-          
+          <p className="text-gray-600 mb-4">Your service request has been submitted successfully.</p>
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
-            <h3 className="font-semibold text-black mb-2">Need Fast Service?</h3>
             <p className="text-sm text-gray-600 mb-3">For urgent requests, call us directly</p>
-            <a 
-              href="tel:+918623038373"
-              className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-medium text-sm inline-flex items-center space-x-2 hover:bg-yellow-500 transition-colors"
-            >
-              <span>📞</span>
-              <span>+91 8623038373</span>
+            <a href="tel:+918623038373" className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-medium text-sm inline-flex items-center space-x-2">
+              <span>📞</span><span>+91 8623038373</span>
             </a>
           </div>
-          
           <p className="text-sm text-gray-500">Redirecting to tickets...</p>
         </div>
       </div>
@@ -226,210 +123,127 @@ function CreateTicketForm() {
         </div>
       </div>
 
-      {/* Form */}
-      <div className="p-4 max-w-md mx-auto">
+      <div className="p-4 max-w-md mx-auto space-y-4">
+        {/* Selected Service Info - readonly display */}
         {serviceName && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-6">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
             <h3 className="font-semibold text-black mb-2">Selected Service</h3>
             <div className="space-y-1">
               <p className="text-sm text-gray-700"><span className="font-medium">Service:</span> {serviceName}</p>
               <p className="text-sm text-gray-700"><span className="font-medium">Category:</span> {categoryName}</p>
-              <p className="text-sm text-gray-700"><span className="font-medium">Type:</span> {subcategoryName}</p>
+              <p className="text-sm text-gray-700"><span className="font-medium">Issue:</span> {subcategoryName}</p>
             </div>
           </div>
         )}
-        
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          {/* Hidden fields */}
+          <input type="hidden" {...register('title')} />
+          <input type="hidden" {...register('appliance')} />
+          <input type="hidden" {...register('issue')} />
+          <input type="hidden" {...register('serviceCategory')} />
+
+          {/* Description */}
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Title</label>
-            <input
-              {...register('title', { required: 'Title is required' })}
-              type="text"
-              placeholder="e.g., AC Not Cooling"
-              className="input-field"
-            />
-            {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-black mb-2">Description</label>
+            <label className="block text-sm font-medium text-black mb-2">Describe the Problem</label>
             <textarea
-              {...register('description', { required: 'Description is required' })}
-              placeholder="Describe the issue in detail..."
+              {...register('description', { required: 'Please describe the issue' })}
+              placeholder="Explain what's wrong in detail..."
               className="input-field h-24 resize-none"
             />
             {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>}
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-black mb-2">Issue</label>
-            <input
-              {...register('issue', { required: 'Issue is required' })}
-              type="text"
-              placeholder="e.g., Not cooling, Making noise"
-              className="input-field"
-            />
-            {errors.issue && <p className="text-red-500 text-sm mt-1">{errors.issue.message}</p>}
-          </div>
-          
+
+          {/* Priority */}
           <div>
             <label className="block text-sm font-medium text-black mb-2">Priority</label>
-            <select
-              {...register('priority')}
-              className="input-field"
-            >
+            <select {...register('priority')} className="input-field">
               <option value="LOW">Low</option>
               <option value="MEDIUM">Medium</option>
               <option value="HIGH">High</option>
             </select>
           </div>
-          
+
+          {/* Time Slot */}
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Appliance</label>
-            <input
-              {...register('appliance', { required: 'Appliance is required' })}
-              type="text"
-              placeholder="e.g., Air Conditioner, Washing Machine"
-              className="input-field"
-            />
-            {errors.appliance && <p className="text-red-500 text-sm mt-1">{errors.appliance.message}</p>}
-          </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-black mb-2">Time Slot</label>
-            <select
-              {...register('timeSlot')}
-              className="input-field"
-            >
-              <option value="morning">Morning</option>
-              <option value="afternoon">Afternoon</option>
-              <option value="evening">Evening</option>
+            <label className="block text-sm font-medium text-black mb-2">Preferred Time</label>
+            <select {...register('timeSlot')} className="input-field">
+              <option value="morning">Morning (9AM - 12PM)</option>
+              <option value="afternoon">Afternoon (12PM - 4PM)</option>
+              <option value="evening">Evening (4PM - 8PM)</option>
             </select>
           </div>
-          
+
+          {/* Alternate Phone */}
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Alternate Phone Number</label>
+            <label className="block text-sm font-medium text-black mb-2">Alternate Phone <span className="text-gray-400 font-normal">(optional)</span></label>
             <input
-              {...register('alternatePhone', { 
-                pattern: {
-                  value: /^[0-9]{10}$/,
-                  message: 'Enter valid 10 digit phone number'
-                }
+              {...register('alternatePhone', {
+                pattern: { value: /^[0-9]{10}$/, message: 'Enter valid 10 digit number' }
               })}
               type="tel"
-              placeholder="e.g., 9876543210"
+              placeholder="9876543210"
               className="input-field"
               maxLength="10"
             />
             {errors.alternatePhone && <p className="text-red-500 text-sm mt-1">{errors.alternatePhone.message}</p>}
           </div>
-          
-          <div>
-            <label className="block text-sm font-medium text-black mb-2">Service Address</label>
-            <div className="space-y-2">
-              <button
-                type="button"
-                onClick={getCurrentLocation}
-                disabled={loadingLocation}
-                className="w-full bg-blue-500 text-white py-2 px-4 rounded-lg font-medium text-sm hover:bg-blue-600 transition-colors disabled:opacity-50 flex items-center justify-center space-x-2"
-              >
+
+          {/* Selected Address - readonly */}
+          {selectedAddress && (
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-3">
+              <p className="text-xs text-gray-500 mb-1">Service Address</p>
+              <div className="flex items-start space-x-2">
                 <span>📍</span>
-                <span>{loadingLocation ? 'Getting Location...' : 'Use Current Location'}</span>
-              </button>
-              <input
-                {...register('houseDetails', { required: 'House details are required' })}
-                type="text"
-                placeholder="House/Flat No, Colony/Society Name"
-                className="input-field"
-              />
-              {errors.houseDetails && <p className="text-red-500 text-sm mt-1">{errors.houseDetails.message}</p>}
-              <textarea
-                {...register('address', { required: 'Address is required' })}
-                placeholder="Enter your complete address or use current location..."
-                className="input-field h-20 resize-none"
-              />
+                <p className="text-sm text-black">{selectedAddress.house}, {selectedAddress.area || selectedAddress.colony}, {selectedAddress.city} - {selectedAddress.pincode}</p>
+              </div>
             </div>
-            {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address.message}</p>}
-          </div>
+          )}
 
           {/* File Upload */}
           <div>
-            <label className="block text-sm font-medium text-black mb-2">Upload Photos/Documents</label>
-            <div className="space-y-3">
-              <input
-                type="file"
-                accept="image/*,application/pdf"
-                multiple
-                onChange={handleFileSelect}
-                className="input-field"
-                disabled={uploadingFiles}
-              />
-              
-              {uploadingFiles && (
-                <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3">
-                  <div className="flex items-center space-x-2 text-blue-600">
-                    <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm">Uploading files...</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={cancelUpload}
-                    className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors"
-                    title="Cancel upload"
-                  >
-                    <span className="text-xs">✕</span>
-                  </button>
+            <label className="block text-sm font-medium text-black mb-2">Photos <span className="text-gray-400 font-normal">(optional)</span></label>
+            <input
+              type="file"
+              accept="image/*,application/pdf"
+              multiple
+              onChange={handleFileSelect}
+              className="input-field"
+              disabled={uploadingFiles}
+            />
+            {uploadingFiles && (
+              <div className="flex items-center justify-between bg-blue-50 border border-blue-200 rounded-lg p-3 mt-2">
+                <div className="flex items-center space-x-2 text-blue-600">
+                  <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm">Uploading...</span>
                 </div>
-              )}
-              
-              {selectedFiles.length > 0 && (
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-gray-700">Uploaded Files:</p>
-                    <button
-                      type="button"
-                      onClick={() => setSelectedFiles([])}
-                      className="text-red-500 hover:text-red-700 text-xs px-2 py-1 rounded border border-red-300 hover:bg-red-50 transition-colors"
-                    >
-                      Clear All
-                    </button>
+                <button type="button" onClick={() => { uploadController?.abort(); setUploadingFiles(false); }}
+                  className="w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center text-xs">✕</button>
+              </div>
+            )}
+            {selectedFiles.length > 0 && (
+              <div className="space-y-2 mt-2">
+                {selectedFiles.map((file, i) => (
+                  <div key={i} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
+                    <span className="text-sm text-gray-700 truncate">📎 {file.name}</span>
+                    <button type="button" onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))}
+                      className="text-red-500 text-sm ml-2">✕</button>
                   </div>
-                  {selectedFiles.map((file, index) => (
-                    <div key={index} className="flex items-center justify-between bg-gray-50 p-2 rounded-lg">
-                      <div className="flex items-center space-x-2">
-                        <span className="text-sm">📎</span>
-                        <span className="text-sm text-gray-700 truncate">{file.name}</span>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => removeFile(index)}
-                        className="text-red-500 hover:text-red-700 text-sm"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Hidden fields for coordinates */}
-          <input type="hidden" {...register('latitude')} />
-          <input type="hidden" {...register('longitude')} />
-
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
-              {error}
-            </div>
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">{error}</div>
           )}
-          
+
           <button
             type="submit"
             disabled={isLoading || uploadingFiles}
             className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? 'Creating Ticket...' : uploadingFiles ? 'Uploading Files...' : 'Create Ticket'}
+            {isLoading ? 'Creating Ticket...' : uploadingFiles ? 'Uploading...' : 'Create Ticket'}
           </button>
         </form>
       </div>
@@ -443,10 +257,7 @@ export default function CreateTicket() {
   return (
     <Suspense fallback={
       <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
-        </div>
+        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
       </div>
     }>
       <CreateTicketForm />

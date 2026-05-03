@@ -3,9 +3,12 @@
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '../../../components/BottomNavigation';
 import Image from 'next/image';
+import { useAddressCheck } from '../../../hooks/useAddressCheck';
+import NoAddressModal from '../../../components/NoAddressModal';
 
 export default function WashingMachineService() {
   const router = useRouter();
+  const { navigateToTicket, showModal, setShowModal } = useAddressCheck();
 
   const washingServices = [
     {
@@ -43,7 +46,7 @@ export default function WashingMachineService() {
   ];
 
   const handleBookService = (service) => {
-    router.push(`/create-ticket?serviceName=Washing Machine Service&categoryName=Washing Machine&subcategoryName=${service.name}`);
+    navigateToTicket(`/create-ticket?serviceName=Washing Machine Service&categoryName=Washing Machine&subcategoryName=${service.name}`);
   };
 
   const handleBookAppointment = (service) => {
@@ -178,6 +181,7 @@ export default function WashingMachineService() {
       </div>
 
       <BottomNavigation />
+      {showModal && <NoAddressModal onClose={() => setShowModal(false)} />}
     </div>
   );
 }

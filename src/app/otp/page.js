@@ -1,24 +1,21 @@
 'use client';
 
 import { useState, useEffect, Suspense } from 'react';
-import { useVerifyOtpMutation, useSendOtpMutation } from '../../store/slices/authApi';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 function OTPContent() {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
-  const [verifyOtp, { isLoading }] = useVerifyOtpMutation();
-  const [sendOtp, { isLoading: isResending }] = useSendOtpMutation();
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [timer, setTimer] = useState(60);
   const router = useRouter();
   const searchParams = useSearchParams();
-  
+
   const phone = searchParams.get('phone');
-  const type = searchParams.get('type');
 
   useEffect(() => {
     if (timer > 0) {
-      const interval = setInterval(() => setTimer(timer - 1), 1000);
+      const interval = setInterval(() => setTimer(t => t - 1), 1000);
       return () => clearInterval(interval);
     }
   }, [timer]);
@@ -28,38 +25,43 @@ function OTPContent() {
       const newOtp = [...otp];
       newOtp[index] = value;
       setOtp(newOtp);
-      
-      if (value && index < 5) {
-        document.getElementById(`otp-${index + 1}`)?.focus();
-      }
+      if (value && index < 5) document.getElementById(`otp-${index + 1}`)?.focus();
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    
     const otpString = otp.join('');
-    if (otpString.length !== 6) {
-      setError('Please enter complete OTP');
-      return;
-    }
+    if (otpString.length !== 6) { setError('Please enter complete OTP'); return; }
 
+    setIsLoading(true);
     try {
-      const result = await verifyOtp({ phone, otp: otpString }).unwrap();
-      localStorage.setItem('token', result.token);
-      router.push('/');
-    } catch (error) {
-      setError('Invalid OTP. Please try again.');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/verify-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone, otp: otpString }),
+      });
+      const result = await res.json();
+      if (!res.ok) throw new Error(result.message);
+      router.push(`/reset-password?phone=${phone}`);
+    } catch (err) {
+      setError(err.message || 'Invalid OTP. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleResend = async () => {
     try {
-      await sendOtp({ phone }).unwrap();
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/forgot-password`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone }),
+      });
       setTimer(60);
       setError('');
-    } catch (error) {
+    } catch {
       setError('Failed to resend OTP');
     }
   };
@@ -72,25 +74,18 @@ function OTPContent() {
             <span className="text-2xl">📱</span>
           </div>
           <h1 className="text-2xl font-bold text-black mb-2">Verify OTP</h1>
-          <p className="text-gray-600">
-            Enter the 6-digit code sent to<br />
-            <span className="font-semibold text-black">{phone || 'your phone'}</span>
+          <p className="text-gray-600">Enter the 6-digit code sent to<br />
+            <span className="font-semibold text-black">{phone}</span>
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex justify-center space-x-3">
             {otp.map((digit, index) => (
-              <input
-                key={index}
-                id={`otp-${index}`}
-                type="text"
-                inputMode="numeric"
-                maxLength="1"
-                value={digit}
+              <input key={index} id={`otp-${index}`} type="text" inputMode="numeric"
+                maxLength="1" value={digit}
                 onChange={(e) => handleOtpChange(index, e.target.value)}
                 className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:border-yellow-400 focus:outline-none"
-                required
               />
             ))}
           </div>
@@ -101,38 +96,23 @@ function OTPContent() {
             </div>
           )}
 
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="btn-primary w-full"
-          >
+          <button type="submit" disabled={isLoading} className="btn-primary w-full">
             {isLoading ? 'Verifying...' : 'Verify OTP'}
           </button>
         </form>
 
         <div className="text-center mt-6">
           {timer > 0 ? (
-            <p className="text-gray-600">
-              Resend OTP in <span className="font-semibold text-yellow-600">{timer}s</span>
-            </p>
+            <p className="text-gray-600">Resend OTP in <span className="font-semibold text-yellow-600">{timer}s</span></p>
           ) : (
-            <button
-              onClick={handleResend}
-              disabled={isResending}
-              className="text-yellow-600 font-semibold"
-            >
-              {isResending ? 'Sending...' : 'Resend OTP'}
+            <button onClick={handleResend} className="text-yellow-600 font-semibold">
+              Resend OTP
             </button>
           )}
         </div>
 
         <div className="text-center mt-4">
-          <button
-            onClick={() => router.back()}
-            className="text-gray-500 text-sm"
-          >
-            ← Back
-          </button>
+          <button onClick={() => router.back()} className="text-gray-500 text-sm">← Back</button>
         </div>
       </div>
     </div>

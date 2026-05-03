@@ -1,18 +1,24 @@
 'use client';
 
 import { useGetMyTicketsQuery } from '../../store/slices/ticketsApi';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, Suspense } from 'react';
 import BottomNavigation from '../../components/BottomNavigation';
 
-export default function Tickets() {
+function TicketsContent() {
   const { data: tickets, isLoading } = useGetMyTicketsQuery();
   const [filter, setFilter] = useState('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const filteredTickets = tickets?.filter(ticket => {
-    if (filter === 'ALL') return true;
-    return ticket.status === filter;
+    const matchesFilter = filter === 'ALL' || ticket.status === filter;
+    const matchesSearch = !searchTerm || 
+      ticket.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ticket.appliance?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      ticket.description?.toLowerCase().includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
   }) || [];
 
   const getStatusColor = (status) => {
@@ -73,6 +79,24 @@ export default function Tickets() {
           >
             <span className="text-lg font-bold">+</span>
           </button>
+        </div>
+
+        {/* Search */}
+        <div className="max-w-md mx-auto mb-3">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search tickets..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full bg-gray-100 rounded-xl px-4 py-3 pr-10 text-sm"
+            />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm('')} className="absolute right-3 top-3 text-gray-400">
+                ✕
+              </button>
+            )}
+          </div>
         </div>
 
         {/* Filter Tabs */}
@@ -148,5 +172,17 @@ export default function Tickets() {
       {/* Bottom Navigation */}
       <BottomNavigation />
     </div>
+  );
+}
+
+export default function Tickets() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-b from-yellow-50 to-white flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <TicketsContent />
+    </Suspense>
   );
 }

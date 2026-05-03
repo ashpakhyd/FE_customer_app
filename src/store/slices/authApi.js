@@ -60,6 +60,14 @@ export const authApi = createApi({
         body: resetData,
       }),
     }),
+    addAddress: builder.mutation({
+      query: (addressData) => ({
+        url: 'add-address',
+        method: 'POST',
+        body: addressData,
+      }),
+      invalidatesTags: ['Auth'],
+    }),
   }),
 });
 
@@ -71,4 +79,5 @@ export const {
   useGetProfileQuery,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useAddAddressMutation,
 } = authApi;

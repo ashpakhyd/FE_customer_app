@@ -3,17 +3,17 @@
 import { useGetMyTicketsQuery, useGetNotificationsQuery } from '../store/slices/ticketsApi';
 import { useGetProfileQuery } from '../store/slices/authApi';
 import { useGetOffersQuery } from '../store/slices/offersApi';
+import { useGetAddressesQuery, useSelectAddressMutation } from '../store/slices/addressesApi';
+import { HiHome, HiBriefcase, HiLocationMarker, HiCheck, HiPlus, HiCog } from 'react-icons/hi';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useMemo, useCallback, useRef } from 'react';
-import { requestFCMToken } from '../config/firebase';
 import BottomNavigation from '../components/BottomNavigation';
 import Image from 'next/image';
 
 export default function Home() {
   const [isClient, setIsClient] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
   const [showNotificationPrompt, setShowNotificationPrompt] = useState(false);
-  const [isEnablingNotification, setIsEnablingNotification] = useState(false);
+  const [showAddressDropdown, setShowAddressDropdown] = useState(false);
   const router = useRouter();
 
   // Elastic drag effect
@@ -72,6 +72,8 @@ export default function Home() {
   const { data: offersData } = useGetOffersQuery({ type: 'available', limit: 3 }, {
     skip: !isClient
   });
+  const { data: addresses = [] } = useGetAddressesQuery(undefined, { skip: !isClient });
+  const [selectAddress] = useSelectAddressMutation();
 
   const unreadNotifications = useMemo(() => 
     notifications?.filter(n => !n.isRead).length || 0, 
@@ -89,26 +91,17 @@ export default function Home() {
   );
 
   const handleEnableNotifications = useCallback(async () => {
-    setIsEnablingNotification(true);
-    try {
-      const fcmToken = await requestFCMToken();
-      if (fcmToken) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fcm/fcm-token`, {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ fcmToken })
-        });
-        setShowNotificationPrompt(false);
-      }
-    } catch (error) {
-      console.error('Failed to enable notifications:', error);
-    } finally {
-      setIsEnablingNotification(false);
-    }
+    setShowNotificationPrompt(false);
   }, []);
+
+  const displayAddress = useMemo(() => 
+    addresses.find(a => a.isSelected) || addresses.find(a => a.isDefault) || addresses[0]
+  , [addresses]);
+
+  const handleSelectAddress = async (addr) => {
+    setShowAddressDropdown(false);
+    if (!addr.isSelected) await selectAddress(addr._id);
+  };
   
   useEffect(() => {
     setIsClient(true);
@@ -125,7 +118,7 @@ export default function Home() {
       return;
     }
 
-    if ('Notification' in window && Notification.permission === 'denied') {
+    if ('Notification' in window && Notification.permission === 'default') {
       setShowNotificationPrompt(true);
     }
   }, [router]);
@@ -153,7 +146,7 @@ export default function Home() {
             </div>
           </div>
           <div className="relative">
-            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer" onClick={() => router.push('/notifications')}>
               <span className="text-lg">🔔</span>
             </div>
             {unreadNotifications > 0 && (
@@ -164,29 +157,65 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Address Dropdown */}
+        <div className="mt-3 max-w-md mx-auto relative">
+          <button
+            onClick={() => setShowAddressDropdown(!showAddressDropdown)}
+            className="w-full flex items-center justify-between bg-yellow-50 border border-yellow-200 rounded-xl px-3 py-2"
+          >
+            <div className="flex items-center space-x-2 min-w-0">
+              <span className="text-sm">📍</span>
+              <span className="text-sm font-medium text-black truncate">
+                {displayAddress ? `${displayAddress.area || displayAddress.city || 'Select Address'}, ${displayAddress.city || ''}` : 'Add Address'}
+              </span>
+            </div>
+            <span className="text-gray-400 text-xs ml-2">{showAddressDropdown ? '▲' : '▼'}</span>
+          </button>
+
+          {showAddressDropdown && (
+            <>
+              <div className="fixed inset-0 z-40" onClick={() => setShowAddressDropdown(false)} />
+              <div className="absolute top-full left-0 right-0 bg-white border border-gray-200 rounded-xl shadow-lg z-50 mt-1 overflow-hidden">
+              {addresses.map((addr, i) => (
+                <button
+                  key={addr._id || i}
+                  onClick={() => handleSelectAddress(addr)}
+                  className={`w-full flex items-center space-x-3 px-4 py-3 hover:bg-yellow-50 transition-colors text-left ${
+                    addr.isSelected ? 'bg-yellow-50' : ''
+                  }`}
+                >
+                  <span className="text-lg">
+                    {addr.type === 'Work' || addr.type === 'Office' ? <HiBriefcase /> : addr.type === 'Other' ? <HiLocationMarker /> : <HiHome />}
+                  </span>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-black">{addr.type || 'Home'}</p>
+                    <p className="text-xs text-gray-500 truncate">{addr.house}, {addr.area || addr.colony}, {addr.city}</p>
+                  </div>
+                  {addr.isSelected && <HiCheck className="text-yellow-500 text-sm" />}
+                </button>
+              ))}
+              <button
+                onClick={() => { setShowAddressDropdown(false); router.push('/add-address'); }}
+                className="w-full flex items-center space-x-3 px-4 py-3 border-t border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <span className="w-8 h-8 bg-yellow-400 rounded-full flex items-center justify-center"><HiPlus className="text-black" /></span>
+                <span className="text-sm font-semibold text-black">Add New Address</span>
+              </button>
+              <button
+                onClick={() => { setShowAddressDropdown(false); router.push('/addresses'); }}
+                className="w-full flex items-center space-x-3 px-4 py-3 border-t border-gray-100 hover:bg-gray-50 transition-colors"
+              >
+                <span className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center"><HiCog className="text-gray-600" /></span>
+                <span className="text-sm font-semibold text-black">Manage Addresses</span>
+              </button>
+              </div>
+            </>
+          )}
+        </div>
+
         {/* Developer Credit */}
         <div className="text-right mt-2 max-w-md mx-auto">
           <p className="text-xs text-gray-400">© 2024 Ashfaq Ahemad Shaikh</p>
-        </div>
-
-        {/* Search */}
-        <div className="mt-4 max-w-md mx-auto">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search tickets..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              onKeyPress={(e) => e.key === 'Enter' && searchTerm && router.push(`/tickets?search=${encodeURIComponent(searchTerm)}`)}
-              className="w-full bg-gray-100 rounded-xl px-4 py-3 pr-10 text-sm"
-            />
-            <button 
-              onClick={() => searchTerm && router.push(`/tickets?search=${encodeURIComponent(searchTerm)}`)}
-              className="absolute right-3 top-3 text-gray-400"
-            >
-              🔍
-            </button>
-          </div>
         </div>
       </div>
 
@@ -256,68 +285,6 @@ export default function Home() {
             <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
               <span className="text-2xl font-bold">{activeTickets}</span>
             </div>
-          </div>
-        </div>
-
-        {/* Repair Shop Card */}
-        <div 
-          className="gradient-card-blue rounded-2xl p-4 text-white mb-6" 
-          style={{background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #60a5fa', ...repairCard.dragStyle}}
-          onMouseDown={repairCard.handleStart}
-          onMouseMove={repairCard.handleMove}
-          onMouseUp={repairCard.handleEnd}
-          onMouseLeave={repairCard.handleEnd}
-          onTouchStart={repairCard.handleStart}
-          onTouchMove={repairCard.handleMove}
-          onTouchEnd={repairCard.handleEnd}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <span className="text-xl">🏪</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-sm">Repair Shop</h3>
-                <p className="text-xs opacity-90">Visit our nearest repair shop</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => window.open('https://maps.google.com/?q=18.972206,76.751003', '_blank')}
-              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
-            >
-              View Map
-            </button>
-          </div>
-        </div>
-
-        {/* Emergency Banner */}
-        <div 
-          className="gradient-card-red rounded-2xl p-4 text-white mb-6" 
-          style={{background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #f87171', ...emergencyCard.dragStyle}}
-          onMouseDown={emergencyCard.handleStart}
-          onMouseMove={emergencyCard.handleMove}
-          onMouseUp={emergencyCard.handleEnd}
-          onMouseLeave={emergencyCard.handleEnd}
-          onTouchStart={emergencyCard.handleStart}
-          onTouchMove={emergencyCard.handleMove}
-          onTouchEnd={emergencyCard.handleEnd}
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                <span className="text-xl">🚨</span>
-              </div>
-              <div>
-                <h3 className="font-bold text-sm">Emergency Service</h3>
-                <p className="text-xs opacity-90">24/7 urgent repairs</p>
-              </div>
-            </div>
-            <button 
-              onClick={() => window.location.href = 'tel:+918623038373'}
-              className="bg-white text-red-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
-            >
-              Call Now
-            </button>
           </div>
         </div>
 
@@ -406,6 +373,68 @@ export default function Home() {
               <p className="font-semibold text-black text-sm mb-1">Schedule</p>
               <p className="text-xs text-gray-600">Book appointment</p>
             </div>
+          </div>
+        </div>
+
+        {/* Repair Shop Card */}
+        <div 
+          className="gradient-card-blue rounded-2xl p-4 text-white" 
+          style={{background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #60a5fa', ...repairCard.dragStyle}}
+          onMouseDown={repairCard.handleStart}
+          onMouseMove={repairCard.handleMove}
+          onMouseUp={repairCard.handleEnd}
+          onMouseLeave={repairCard.handleEnd}
+          onTouchStart={repairCard.handleStart}
+          onTouchMove={repairCard.handleMove}
+          onTouchEnd={repairCard.handleEnd}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-xl">🏪</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Repair Shop</h3>
+                <p className="text-xs opacity-90">Visit our nearest repair shop</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => window.open('https://maps.google.com/?q=18.972206,76.751003', '_blank')}
+              className="bg-white text-blue-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+            >
+              View Map
+            </button>
+          </div>
+        </div>
+
+        {/* Emergency Banner */}
+        <div 
+          className="gradient-card-red rounded-2xl p-4 text-white" 
+          style={{background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', border: '1px solid #f87171', ...emergencyCard.dragStyle}}
+          onMouseDown={emergencyCard.handleStart}
+          onMouseMove={emergencyCard.handleMove}
+          onMouseUp={emergencyCard.handleEnd}
+          onMouseLeave={emergencyCard.handleEnd}
+          onTouchStart={emergencyCard.handleStart}
+          onTouchMove={emergencyCard.handleMove}
+          onTouchEnd={emergencyCard.handleEnd}
+        >
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <div className="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <span className="text-xl">🚨</span>
+              </div>
+              <div>
+                <h3 className="font-bold text-sm">Emergency Service</h3>
+                <p className="text-xs opacity-90">24/7 urgent repairs</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => window.location.href = 'tel:+918623038373'}
+              className="bg-white text-red-600 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors"
+            >
+              Call Now
+            </button>
           </div>
         </div>
 
