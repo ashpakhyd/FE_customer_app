@@ -101,8 +101,8 @@ function CreateTicketForm() {
           <p className="text-gray-600 mb-4">Your service request has been submitted successfully.</p>
           <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-4">
             <p className="text-sm text-gray-600 mb-3">For urgent requests, call us directly</p>
-            <a href="tel:+918623038373" className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-medium text-sm inline-flex items-center space-x-2">
-              <span>📞</span><span>+91 8623038373</span>
+            <a href="tel:+919172605997" className="bg-yellow-400 text-black px-4 py-2 rounded-lg font-medium text-sm inline-flex items-center space-x-2">
+              <span>📞</span><span>+91 9172605997</span>
             </a>
           </div>
           <p className="text-sm text-gray-500">Redirecting to tickets...</p>

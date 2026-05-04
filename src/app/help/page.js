@@ -59,7 +59,7 @@ export default function HelpSupport() {
       desc: "Speak with our team",
       icon: "📞",
       bgColor: "bg-purple-100",
-      action: () => window.location.href = "tel:+918623038373"
+      action: () => window.location.href = "tel:+919172605997"
     },
     {
       id: 4,
@@ -206,7 +206,7 @@ export default function HelpSupport() {
             </div>
           </div>
           <button 
-            onClick={() => window.location.href = "tel:+918623038373"}
+            onClick={() => window.location.href = "tel:+919172605997"}
             className="w-full bg-red-500 text-white py-3 rounded-xl font-semibold hover:bg-red-600 transition-colors"
           >
             Call Emergency Line

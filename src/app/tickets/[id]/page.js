@@ -2,7 +2,7 @@
 
 import { use, useState } from 'react';
 
-import { useGetTicketQuery, useDeleteTicketMutation } from '../../../store/slices/ticketsApi';
+import { useGetTicketQuery, useDeleteTicketMutation, useRateTechnicianMutation } from '../../../store/slices/ticketsApi';
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '../../../components/BottomNavigation';
 
@@ -26,6 +26,7 @@ export default function TicketDetails({ params }) {
 
   const { data: ticket, isLoading, error } = useGetTicketQuery(resolvedParams.id);
   const [deleteTicket, { isLoading: isDeleting }] = useDeleteTicketMutation();
+  const [rateTechnician] = useRateTechnicianMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showRatingModal, setShowRatingModal] = useState(false);
   const [rating, setRating] = useState(0);
@@ -42,30 +43,15 @@ export default function TicketDetails({ params }) {
   };
 
   const handleRatingSubmit = async () => {
-    if (rating === 0) {
-      alert('Please select a rating');
-      return;
-    }
+    if (rating === 0) { alert('Please select a rating'); return; }
     setIsSubmittingRating(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:5000/api/tickets/${resolvedParams.id}/rate`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ rating, feedback })
-      });
-      if (response.ok) {
-        setShowRatingModal(false);
-        setRating(0);
-        setFeedback('');
-        alert('Rating submitted successfully!');
-      } else {
-        alert('Failed to submit rating');
-      }
-    } catch (error) {
+      await rateTechnician({ id: resolvedParams.id, rating, feedback }).unwrap();
+      setShowRatingModal(false);
+      setRating(0);
+      setFeedback('');
+      alert('Rating submitted successfully!');
+    } catch {
       alert('Failed to submit rating');
     } finally {
       setIsSubmittingRating(false);

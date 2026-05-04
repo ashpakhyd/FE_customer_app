@@ -75,7 +75,7 @@ export default function TermsOfService() {
         </p>
         <p className="text-gray-700 mt-2">
           Email: ashpak.shaikh.dev@gmail.com<br/>
-          Phone: +91 8623038373
+          Phone: +91 9172605997
         </p>
       </section>
     </div>

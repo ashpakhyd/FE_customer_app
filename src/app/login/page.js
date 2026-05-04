@@ -48,7 +48,7 @@ export default function Login() {
       // Send FCM token to backend
       const fcmToken = await requestFCMToken();
       if (fcmToken) {
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/fcm/fcm-token`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/fcm/fcm-token`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${result.token}`,
