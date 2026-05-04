@@ -59,7 +59,7 @@ export const ticketsApi = createApi({
       invalidatesTags: ['Rating'],
     }),
     getMyRatings: builder.query({
-      query: () => 'ratings/customer/ratings',
+      query: () => 'customer/ratings',
       providesTags: ['Rating'],
     }),
     getNotifications: builder.query({
