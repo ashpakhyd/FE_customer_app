@@ -3,6 +3,7 @@ import "./globals.css";
 import ReduxProvider from "../components/ReduxProvider";
 import LoadingProvider from "../components/LoadingProvider";
 import FCMProvider from "../components/FCMProvider";
+import { Toaster } from "react-hot-toast";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +42,10 @@ export default function RootLayout({ children }) {
       >
         <ReduxProvider>
           <LoadingProvider>
-            <FCMProvider>{children}</FCMProvider>
+            <FCMProvider>
+              <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+              {children}
+            </FCMProvider>
           </LoadingProvider>
         </ReduxProvider>
       </body>

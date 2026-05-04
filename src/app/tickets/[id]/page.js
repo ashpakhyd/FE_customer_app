@@ -1,7 +1,7 @@
 'use client';
 
 import { use, useState } from 'react';
-
+import toast from 'react-hot-toast';
 import { useGetTicketQuery, useDeleteTicketMutation, useRateTechnicianMutation } from '../../../store/slices/ticketsApi';
 import { useRouter } from 'next/navigation';
 import BottomNavigation from '../../../components/BottomNavigation';
@@ -38,21 +38,21 @@ export default function TicketDetails({ params }) {
       await deleteTicket(resolvedParams.id).unwrap();
       router.push('/tickets');
     } catch (error) {
-      alert('Failed to delete ticket');
+      toast.error(error?.data?.message || 'Failed to delete ticket');
     }
   };
 
   const handleRatingSubmit = async () => {
-    if (rating === 0) { alert('Please select a rating'); return; }
+    if (rating === 0) { toast.error('Please select a rating'); return; }
     setIsSubmittingRating(true);
     try {
       await rateTechnician({ id: resolvedParams.id, rating, feedback }).unwrap();
       setShowRatingModal(false);
       setRating(0);
       setFeedback('');
-      alert('Rating submitted successfully!');
-    } catch {
-      alert('Failed to submit rating');
+      toast.success('Rating submitted successfully!');
+    } catch (error) {
+      toast.error(error?.data?.message || error?.message || 'Failed to submit rating');
     } finally {
       setIsSubmittingRating(false);
     }
