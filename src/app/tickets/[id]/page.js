@@ -323,15 +323,31 @@ export default function TicketDetails({ params }) {
           </div>
         </div>
 
-        {/* Rate Service Button for Completed Tickets */}
+        {/* Rating Display / Rate Service Button for Completed Tickets */}
         {ticket?.status === 'COMPLETED' && (
-          <button
-            onClick={() => setShowRatingModal(true)}
-            className="w-full bg-yellow-400 text-black py-3 rounded-xl font-medium hover:bg-yellow-500 transition-colors flex items-center justify-center space-x-2"
-          >
-            <span>⭐</span>
-            <span>Rate Service</span>
-          </button>
+          ticket?.rating ? (
+            <div className="bg-white rounded-2xl p-5 shadow-sm">
+              <h3 className="font-semibold text-black mb-3">Your Rating</h3>
+              <div className="flex items-center space-x-1 mb-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span key={star} className={`text-2xl ${star <= ticket.rating.rating ? 'text-yellow-400' : 'text-gray-300'}`}>★</span>
+                ))}
+                <span className="ml-2 text-sm font-semibold text-black">{ticket.rating.rating}/5</span>
+              </div>
+              {ticket.rating.feedback && (
+                <p className="text-sm text-gray-600 italic">"{ticket.rating.feedback}"</p>
+              )}
+              <p className="text-xs text-gray-400 mt-2">{new Date(ticket.rating.createdAt).toLocaleDateString()}</p>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowRatingModal(true)}
+              className="w-full bg-yellow-400 text-black py-3 rounded-xl font-medium hover:bg-yellow-500 transition-colors flex items-center justify-center space-x-2"
+            >
+              <span>⭐</span>
+              <span>Rate Service</span>
+            </button>
+          )
         )}
       </div>
 
